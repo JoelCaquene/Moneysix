@@ -263,7 +263,7 @@ def tarefa(request):
     # Validação de Domingo para o template
     is_sunday = (today.weekday() == 6)
 
-    # Lista de empresas enviada diretamente para o template (resolve o erro de TemplateTag)
+    # Lista de empresas enviada diretamente para o template para (resolve o erro de TemplateTag)
     companies = [
         {'name': 'UNITEL', 'category': 'Telecomunicações', 'icon': 'fa-phone'},
         {'name': 'SONANGOL', 'category': 'Energia', 'icon': 'fa-gas-pump'},
