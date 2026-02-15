@@ -87,13 +87,13 @@
                                 <input type="number" name="amount" id="id_amount" readonly required placeholder="0">
                             </div>
                             <div id="tax-info" class="tax-info-box" style="display:none;">
-                                <small>Taxa administrativa (15%): - <span id="tax-value">0</span> KZ</small><br>
+                                <small>Taxa administrativa (10%): - <span id="tax-value">0</span> KZ</small><br>
                                 <strong>Receberá líquido: <span id="net-value">0</span> KZ</strong>
                             </div>
                         </div>
 
                         <div class="quick-values-grid">
-                            <button type="button" class="value-pill" onclick="setAmount(2500)">2.500</button>
+                            <button type="button" class="value-pill" onclick="setAmount(2500)">2.000</button>
                             <button type="button" class="value-pill" onclick="setAmount(5000)">5.000</button>
                             <button type="button" class="value-pill" onclick="setAmount(17000)">17.000</button>
                             <button type="button" class="value-pill" onclick="setAmount(30000)">30.000</button>
@@ -190,7 +190,7 @@
         const taxDisplay = document.getElementById('tax-value');
         const netDisplay = document.getElementById('net-value');
         
-        const tax = (val * 0.15).toFixed(0);
+        const tax = (val * 0.10).toFixed(0);
         const net = (val - tax).toFixed(0);
         
         taxDisplay.innerText = Number(tax).toLocaleString('pt-PT');

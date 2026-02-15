@@ -19,7 +19,7 @@
             </div>
             <div class="info-item">
                 <i class="fas fa-clock"></i>
-                <p><strong>Atendimento:</strong> 08:30 às 21:00.</p>
+                <p><strong>Atendimento:</strong> 08:30 às 20:00.</p>
             </div>
             
             <hr class="modal-divider">
@@ -46,7 +46,7 @@
 
 <div class="forex-dashboard">
     
-    {# TOPO SUPERIOR COM BOTÃO DE DOWNLOAD ADICIONADO #}
+    {# TOPO SUPERIOR COM BOTÃO DE DOWNLOAD #}
     <div class="top-header">
         <a href="{% url 'logout' %}" class="btn-sair-topo">SAIR</a>
         <h1 class="logo-angowork">ANGOWORK</h1>
@@ -110,36 +110,15 @@
         </a>
     </div>
 
-    <div class="licenca-container" style="text-align: center; padding: 20px;">
-        <img src="{% static 'images/logo_isj.png' %}" alt="Logo ISJ" class="isj-logo" style="max-width: 80px; margin-bottom: 10px;">
-        
-        <p class="licenca-texto" style="font-weight: bold; color: #25D366; margin-bottom: 15px;">
-            <i class="fab fa-whatsapp"></i> SUPORTE WHATSAPP
-        </p>
-
-        <p style="margin-bottom: 10px;">
-            <a href="https://wa.me/15485642329" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600;">
-                <i class="fas fa-external-link-alt" style="font-size: 0.8rem; opacity: 0.7;"></i> +1 (548) 871-5435
-            </a>
-        </p>
-
-        <p style="margin-bottom: 10px;">
-            <a href="https://wa.me/12496814350" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600;">
-                <i class="fas fa-external-link-alt" style="font-size: 0.8rem; opacity: 0.7;"></i> +1 (548) 871-6128
-            </a>
-        </p>
-
-        <p style="margin-bottom: 10px;">
-            <a href="https://wa.me/13436770920" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600;">
-                <i class="fas fa-external-link-alt" style="font-size: 0.8rem; opacity: 0.7;"></i> +1 (548) 871-6128
-            </a>
-        </p>
-
-        <p style="margin-bottom: 10px;">
-            <a href="https://wa.me/13659088916" target="_blank" style="text-decoration: none; color: inherit; font-weight: 600;">
-                <i class="fas fa-external-link-alt" style="font-size: 0.8rem; opacity: 0.7;"></i> +1 (249) 528-2836
-            </a>
-        </p>
+    {# NOVA SEÇÃO: CARROSSEL DE IMAGENS (SUBSTITUINDO OS CONTACTOS) #}
+    <div class="carousel-container glass-effect">
+        <div class="carousel-slide">
+            <img src="{% static 'images/banner1.jpg' %}" class="carousel-img active">
+            <img src="{% static 'images/banner2.jpg' %}" class="carousel-img">
+            <img src="{% static 'images/banner3.jpg' %}" class="carousel-img">
+            <img src="{% static 'images/banner4.jpg' %}" class="carousel-img">
+            <img src="{% static 'images/banner5.jpg' %}" class="carousel-img">
+        </div>
     </div>
 
     {# BARRA INFERIOR #}
@@ -187,7 +166,39 @@
 
     .forex-dashboard { width: 100%; max-width: 500px; margin: 0 auto; padding-bottom: 110px; }
 
-    /* --- ESTILO DO BOTÃO DE DOWNLOAD (NOVO) --- */
+    /* ESTILO DO CARROSSEL */
+    .carousel-container {
+        margin: 15px 10px;
+        padding: 5px;
+        border-radius: 15px;
+        overflow: hidden;
+        height: 180px; /* Altura ajustável conforme suas imagens */
+        position: relative;
+    }
+
+    .carousel-slide {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .carousel-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain; /* Garante que a imagem apareça completa sem cortar */
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+        border-radius: 10px;
+    }
+
+    .carousel-img.active {
+        opacity: 1;
+    }
+
+    /* --- ESTILO DO BOTÃO DE DOWNLOAD --- */
     .btn-download-app {
         background: #3b82f6;
         color: white;
@@ -233,7 +244,6 @@
     .modal-divider { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0; }
     .modal-text-content p { font-size: 12px; line-height: 1.6; color: #bbb; margin-bottom: 12px; text-align: center; }
 
-    /* WHATSAPP PERSONALIZADO */
     .btn-whatsapp-custom { 
         background: var(--whatsapp-green); color: white; text-decoration: none; 
         padding: 12px; border-radius: 15px; display: flex; justify-content: center; 
@@ -268,10 +278,6 @@
     .action-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 15px 10px; padding: 15px 5px; border-radius: 15px; }
     .icon-box-dark { width: 42px; height: 42px; background: var(--blue-dark); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; font-size: 18px; }
 
-    .licenca-container { margin: 20px 15px; padding: 15px; text-align: center; background: rgba(0,0,0,0.4); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
-    .isj-logo { width: 70px; margin-bottom: 10px; opacity: 0.8; }
-    .licenca-texto { font-size: 9px; color: #aaa; line-height: 1.4; margin: 0; }
-
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); padding: 10px 5px; background: #000 !important; z-index: 999; border-radius: 20px 20px 0 0; }
     .icon-box-black { width: 40px; height: 40px; background: #111; color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; font-size: 16px; border: 1px solid #222; }
 
@@ -285,11 +291,26 @@
 </style>
 
 <script>
+    // Lógica do Modal
     function closeModal() {
         const modal = document.getElementById('welcomeModal');
         modal.style.transition = 'opacity 0.3s ease';
         modal.style.opacity = '0';
         setTimeout(() => { modal.style.display = 'none'; }, 300);
+    }
+
+    // Lógica do Carrossel (5 segundos)
+    let currentImg = 0;
+    const images = document.querySelectorAll('.carousel-img');
+    
+    function changeImage() {
+        images[currentImg].classList.remove('active');
+        currentImg = (currentImg + 1) % images.length;
+        images[currentImg].classList.add('active');
+    }
+
+    if (images.length > 0) {
+        setInterval(changeImage, 5000);
     }
 </script>
 {% endblock %}

@@ -166,7 +166,7 @@ def approve_deposit(request, deposit_id):
 # --- SAQUE ---
 @login_required
 def saque(request):
-    MIN_WITHDRAWAL_AMOUNT = 2500
+    MIN_WITHDRAWAL_AMOUNT = 2000
     platform_settings = PlatformSettings.objects.first()
     withdrawal_instruction = platform_settings.withdrawal_instruction if platform_settings else ''
     withdrawal_records = Withdrawal.objects.filter(user=request.user).order_by('-created_at')
@@ -213,10 +213,10 @@ def saque(request):
             elif not metodo:
                 messages.error(request, 'Selecione um método de levantamento.')
             else:
-                taxa = original_amount * Decimal('0.15')
+                taxa = original_amount * Decimal('0.10')
                 amount_with_discount = original_amount - taxa
                 
-                detalhes = f"Método: {metodo} | Taxa de 15% descontada: {taxa} KZ | "
+                detalhes = f"Método: {metodo} | Taxa de 10% descontada: {taxa} KZ | "
                 if metodo == 'BANCO':
                     detalhes += f"Banco: {bank_name}, IBAN: {iban}, Titular: {holder}"
                 elif metodo == 'PIX':
@@ -235,7 +235,7 @@ def saque(request):
                 request.user.available_balance -= original_amount
                 request.user.save()
                 
-                messages.success(request, f'Pedido enviado! Taxa de 15% descontada ({taxa} KZ). Você receberá {amount_with_discount} KZ.')
+                messages.success(request, f'Pedido enviado! Taxa de 10% descontada ({taxa} KZ). Você receberá {amount_with_discount} KZ.')
                 return redirect('saque')
     else:
         form = WithdrawalForm()
