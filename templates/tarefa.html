@@ -1,344 +1,233 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}ANGOWORK - Centro de Avaliações{% endblock %}
+{% block title %}bbdo | Publicidade Profissional{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
 
-<div class="work-wrapper" style="background: url('{% static 'images/bg-work.jpg' %}') no-repeat center center fixed; background-size: cover;">
-    <div class="glass-overlay"></div>
-    
-    <div class="work-container">
+<div class="ads-viewport">
+    <div class="vibrant-bg"></div>
+
+    <div class="ads-container">
         
-        {# NOVO HEADER ESTILIZADO #}
-        <div class="header-premium">
-            <div class="brand-group">
-                <div class="logo-circle">AW</div>
-                <div class="brand-text">
-                    <h1>ANGOWORK</h1>
-                    <p><i class="fa-solid fa-circle-check"></i> Parceiro Oficial de Marcas</p>
-                </div>
+        {# HEADER COM VOLTAR #}
+        <div class="ads-header">
+            <a href="{% url 'menu' %}" class="back-link">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <h1 class="header-title">CENTRAL DE TAREFAS</h1>
+            <div style="width: 24px;"></div>
+        </div>
+
+        {# NAVEGAÇÃO DE PASSOS (ESTÁTICA NO TOPO) #}
+        <div class="step-nav">
+            <div class="nav-item active" id="nav-link" onclick="handleNavClick('step-links')">
+                <i class="fas fa-link"></i>
+                <span>Link</span>
             </div>
-            <div class="badge-status {% if is_estagiario %}is-free{% endif %}">
-                {% if is_estagiario %}ESTAGIÁRIO{% else %}VIP GOLD{% endif %}
+            <div class="nav-item" id="nav-upload">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Upload</span>
+            </div>
+            <div class="nav-item" id="nav-pending" onclick="handleNavClick('step-pending')">
+                <i class="fas fa-history"></i>
+                <span>Pendente</span>
+            </div>
+            <div class="nav-item" id="nav-done" onclick="handleNavClick('step-done')">
+                <i class="fas fa-check-double"></i>
+                <span>Concluído</span>
             </div>
         </div>
 
         {# CONTEÚDO PRINCIPAL #}
-        <div class="content-body">
+        <div class="ads-card glass-effect">
             
-            {# SEÇÃO 1: SELEÇÃO DE EMPRESAS (SLIDE) #}
-            <div id="section-select" class="view-section">
-                <div class="task-info-card">
-                    <p>Escolha uma empresa para avaliar hoje e receba seu bônus.</p>
-                    {% if is_estagiario %}
-                    <div class="mini-alert">
-                        Ganho disponível: <strong>450 KZ</strong>
-                    </div>
-                    {% endif %}
+            {# FASE 1: LINKS #}
+            <div id="step-links" class="ad-step active">
+                <div class="step-info">
+                    <h3>Missões de Hoje</h3>
+                    <p>Acesse um link abaixo para começar a publicidade.</p>
                 </div>
-
-                <div class="company-slider-container">
-                    {% if is_sunday %}
-                        <div class="sunday-card">
-                            <i class="fa-solid fa-mug-hot"></i>
-                            <h3>Domingo de Descanso</h3>
-                            <p>Nossos servidores estão em manutenção. Voltamos segunda-feira!</p>
-                        </div>
-                    {% else %}
-                        <div id="company-wrapper" class="company-wrapper">
-                            {% for company in companies %}
-                            <div class="company-card-premium" data-index="{{ forloop.counter0 }}" style="display: none;">
-                                <div class="comp-icon-box">
-                                    <i class="fa-solid {{ company.icon }}"></i>
-                                </div>
-                                <div class="comp-details">
-                                    <h3>{{ company.name }}</h3>
-                                    <span class="category">{{ company.category }}</span>
-                                    <p class="description">Empresa líder no setor, com mais de 10 anos de excelência em Angola.</p>
-                                </div>
-                                <button class="btn-start-eval">Avaliar Agora</button>
-                            </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="slider-controls">
-                            <button id="next-btn" class="btn-next">Próxima Empresa <i class="fa-solid fa-arrow-right"></i></button>
-                        </div>
-                    {% endif %}
+                <div class="social-mission-list">
+                    <a href="https://www.tiktok.com" target="_blank" class="mission-item tiktok" onclick="goToUpload()">
+                        <div class="social-icon"><i class="fab fa-tiktok"></i></div>
+                        <div class="social-name">Publicidade TikTok</div>
+                        <span class="status-tag">Disponível</span>
+                    </a>
+                    <a href="https://www.facebook.com" target="_blank" class="mission-item facebook" onclick="goToUpload()">
+                        <div class="social-icon"><i class="fab fa-facebook-f"></i></div>
+                        <div class="social-name">Publicidade Facebook</div>
+                        <span class="status-tag">Disponível</span>
+                    </a>
                 </div>
             </div>
 
-            {# SEÇÃO 2: AVALIAÇÃO (GLASS TERMINAL) #}
-            <div id="section-rate" class="view-section" style="display: none;">
-                <div class="rating-box-glass">
-                    <h2 id="eval-name">Avaliação</h2>
-                    <p>Selecione o nível de satisfação:</p>
-                    
-                    <div class="star-rating-v2">
-                        <i class="fa-solid fa-star star-btn" data-value="1"></i>
-                        <i class="fa-solid fa-star star-btn" data-value="2"></i>
-                        <i class="fa-solid fa-star star-btn" data-value="3"></i>
-                        <i class="fa-solid fa-star star-btn" data-value="4"></i>
-                        <i class="fa-solid fa-star star-btn" data-value="5"></i>
+            {# FASE 2: UPLOAD #}
+            <div id="step-upload" class="ad-step">
+                <div class="step-info">
+                    <h3>Carregar Comprovativo</h3>
+                    <p>Sua captura de tela aparecerá aqui antes de enviar.</p>
+                </div>
+                <div class="upload-area" onclick="document.getElementById('task-file').click()">
+                    <input type="file" id="task-file" hidden accept="image/*" onchange="handlePreview(event)">
+                    <div id="up-placeholder">
+                        <div class="pulse-icon"><i class="fas fa-image"></i></div>
+                        <p>Clique para selecionar print</p>
                     </div>
+                    <img id="img-preview" class="preview-img" style="display:none;">
+                </div>
+                <button id="btn-submit" class="btn-main disabled" disabled onclick="submitTask()">ENVIAR PARA ANÁLISE</button>
+            </div>
 
-                    <div id="load-box" style="display: none;">
-                        <div class="custom-loader"></div>
-                        <p>Sincronizando dados com o servidor...</p>
+            {# FASE 3: PENDENTE #}
+            <div id="step-pending" class="ad-step text-center">
+                <div class="pending-card">
+                    <div class="mini-frame">
+                        <img id="final-preview" src="{% static 'images/placeholder.jpg' %}">
+                        <div class="badge-pending">EM ANÁLISE</div>
                     </div>
-
-                    <button id="final-submit" class="btn-confirm-eval" disabled>CONFIRMAR AVALIAÇÃO</button>
+                    <div class="timer-box">
+                        <i class="fas fa-hourglass-half fa-spin"></i>
+                        <span>Aguarde 2-3 minutos</span>
+                    </div>
+                    <h3>Sincronizando Saldo...</h3>
+                    <p>Sua tarefa está na fila de verificação. Você já pode voltar ao menu principal.</p>
+                    <a href="{% url 'menu' %}" class="btn-outline">IR PARA O MENU</a>
                 </div>
             </div>
 
-            {# SEÇÃO 3: FINALIZADO (BONECO DANÇANDO) #}
-            <div id="section-done" class="view-section" style="display: none;">
-                <div class="success-screen">
-                    <img src="{% static 'images/done-anim.gif' %}" alt="Sucesso" class="dance-anim">
-                    <h2>Excelente Trabalho!</h2>
-                    <p>Sua avaliação foi processada com sucesso. O saldo já está na sua carteira.</p>
-                    <a href="{% url 'home' %}" class="btn-back">Voltar ao Painel</a>
+            {# FASE 4: CONCLUÍDO #}
+            <div id="step-done" class="ad-step text-center">
+                <div class="success-box">
+                    <div class="check-anim">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Tudo Pronto!</h3>
+                    <p>Sua tarefa diária foi validada e o valor creditado.</p>
+                    <div class="task-history-item">
+                        <span>Tarefa Publicidade</span>
+                        <span class="val-tag">CONCLUÍDO</span>
+                    </div>
+                    <a href="{% url 'menu' %}" class="btn-main">VOLTAR AO INÍCIO</a>
                 </div>
             </div>
 
         </div>
-
-        {# CARD DE PUBLICIDADE PREMIUM COM CARROSSEL #}
-<div class="ads-card-premium">
-    <div class="ad-label">PUBLICIDADE</div>
-    
-    <div class="custom-carousel">
-        <div class="carousel-inner" id="carouselInner">
-            <div class="carousel-item active">
-                <img src="{% static 'images/banner1.jpg' %}" alt="Ads 1">
-            </div>
-            <div class="carousel-item">
-                <img src="{% static 'images/banner2.jpg' %}" alt="Ads 2">
-            </div>
-            <div class="carousel-item">
-                <img src="{% static 'images/banner3.jpg' %}" alt="Ads 3">
-            </div>
-            <div class="carousel-item">
-                <img src="{% static 'images/banner4.jpg' %}" alt="Ads 4">
-            </div>
-            <div class="carousel-item">
-                <img src="{% static 'images/banner5.jpg' %}" alt="Ads 5">
-            </div>
-        </div>
-    </div>
-
-    <div class="ad-info">
-        <span>Anuncie aqui sua marca para milhares de usuários.</span>
     </div>
 </div>
 
 <style>
-    /* Estilização do Card */
-    .ads-card-premium {
-        background: #fff;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        position: relative;
-        margin: 15px 0;
-        border: 1px solid #eee;
-    }
-
-    .ad-label {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        padding: 2px 8px;
-        font-size: 10px;
-        border-radius: 4px;
-        z-index: 10;
-        font-weight: bold;
-    }
-
-    /* Container do Carrossel */
-    .custom-carousel {
-        position: relative;
-        width: 100%;
-        height: 180px; /* Altura fixa para manter o padrão */
-        overflow: hidden;
-    }
-
-    .carousel-inner {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-        height: 100%;
-    }
-
-    .carousel-item {
-        min-width: 100%;
-        height: 100%;
-    }
-
-    .carousel-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* Garante que a imagem não seja cortada */
-        background-color: #f8f9fa; /* Fundo neutro caso a imagem seja menor */
-    }
-
-    .ad-info {
-        padding: 10px;
-        text-align: center;
-        background: #fff;
-    }
-
-    .ad-info span {
-        font-size: 13px;
-        color: #666;
-        font-weight: 500;
-    }
-</style>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const inner = document.getElementById('carouselInner');
-        const items = document.querySelectorAll('.carousel-item');
-        let index = 0;
-
-        function nextSlide() {
-            index++;
-            if (index >= items.length) {
-                index = 0;
-            }
-            const offset = -index * 100;
-            inner.style.transform = `translateX(${offset}%)`;
-        }
-
-        // Troca a cada 5 segundos (5000ms)
-        setInterval(nextSlide, 5000);
-    });
-</script>
-
-    </div>
-</div>
-
-<style>
-    /* VARIÁVEIS E BASE */
     :root {
-        --glass: rgba(255, 255, 255, 0.15);
-        --glass-border: rgba(255, 255, 255, 0.3);
-        --gold: #ffcc00;
-        --success: #00ff88;
+        --bg: #050505;
+        --accent: #8e44ad;
+        --glass: rgba(255, 255, 255, 0.05);
+        --text-dim: #b3b3b3;
     }
 
-    .work-wrapper { min-height: 100vh; position: relative; display: flex; justify-content: center; padding: 20px 0; }
-    .glass-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(0, 15, 30, 0.7); backdrop-filter: blur(8px); z-index: 1; }
-    .work-container { position: relative; z-index: 2; width: 95%; max-width: 450px; display: flex; flex-direction: column; gap: 20px; }
+    body { background: var(--bg); font-family: 'Montserrat', sans-serif; color: white; margin: 0; }
+    .vibrant-bg { position: fixed; width: 100vw; height: 100vh; background: radial-gradient(circle at top right, #2c003e, transparent); z-index: -1; }
+    .ads-container { max-width: 450px; margin: 0 auto; padding: 20px; }
+    
+    .ads-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .header-title { font-size: 0.8rem; letter-spacing: 2px; font-weight: 800; color: var(--accent); }
 
-    /* HEADER */
-    .header-premium { background: var(--glass); border: 1px solid var(--glass-border); padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .logo-circle { width: 45px; height: 45px; background: white; color: #003366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-    .brand-text h1 { color: white; font-size: 18px; margin: 0; }
-    .brand-text p { color: var(--gold); font-size: 10px; margin: 0; text-transform: uppercase; }
-    .badge-status { background: var(--success); color: #003366; padding: 5px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; }
-    .badge-status.is-free { background: var(--gold); }
+    /* STEP NAVIGATION */
+    .step-nav { display: flex; justify-content: space-between; background: var(--glass); border-radius: 20px; padding: 10px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+    .nav-item { flex: 1; text-align: center; font-size: 0.6rem; opacity: 0.4; transition: 0.3s; cursor: pointer; }
+    .nav-item i { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+    .nav-item.active { opacity: 1; color: var(--accent); }
 
-    /* TASK INFO & CARDS */
-    .task-info-card { text-align: center; color: white; font-size: 13px; margin-bottom: 20px; }
-    .mini-alert { background: rgba(255,204,0,0.2); border: 1px solid var(--gold); display: inline-block; padding: 5px 15px; border-radius: 15px; margin-top: 10px; }
+    /* CARD STYLE */
+    .glass-effect { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(15px); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.05); min-height: 400px; }
+    .ad-step { display: none; }
+    .ad-step.active { display: block; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .company-card-premium { background: white; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: slideIn 0.5s ease; margin-bottom: 15px; }
-    .comp-icon-box { width: 70px; height: 70px; background: #f0f4f8; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 30px; color: #003366; }
-    .comp-details h3 { margin: 0; color: #333; }
-    .comp-details .category { color: #888; font-size: 12px; }
-    .comp-details .description { font-size: 12px; color: #666; margin: 15px 0; line-height: 1.4; }
-    .btn-start-eval { width: 100%; background: #003366; color: white; border: none; padding: 12px; border-radius: 15px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    .step-info h3 { font-size: 1.2rem; margin-bottom: 5px; }
+    .step-info p { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 25px; }
 
-    .slider-controls { display: flex; justify-content: center; margin-top: 10px; }
-    .btn-next { background: var(--glass); border: 1px solid var(--glass-border); color: white; padding: 10px 20px; border-radius: 30px; font-size: 13px; cursor: pointer; }
+    /* MISSIONS */
+    .mission-item { display: flex; align-items: center; background: rgba(255,255,255,0.03); padding: 18px; border-radius: 20px; text-decoration: none; color: white; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    .social-icon { width: 40px; font-size: 1.4rem; }
+    .social-name { flex: 1; font-weight: 600; font-size: 0.85rem; }
+    .status-tag { font-size: 0.6rem; background: #27ae60; padding: 3px 8px; border-radius: 5px; }
 
-    /* RATING GLASS */
-    .rating-box-glass { background: var(--glass); border: 1px solid var(--glass-border); padding: 40px 20px; border-radius: 30px; text-align: center; color: white; }
-    .star-rating-v2 { margin: 25px 0; font-size: 35px; color: rgba(255,255,255,0.2); }
-    .star-rating-v2 i.active { color: var(--gold); text-shadow: 0 0 15px var(--gold); }
-    .btn-confirm-eval { width: 100%; padding: 15px; border-radius: 15px; border: none; background: grey; color: white; font-weight: 700; }
-    .btn-confirm-eval.ready { background: var(--success); color: #003366; cursor: pointer; }
+    /* UPLOAD */
+    .upload-area { width: 100%; height: 220px; border: 2px dashed rgba(142, 68, 173, 0.3); border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; background: rgba(142, 68, 173, 0.05); margin-bottom: 20px; }
+    .preview-img { width: 100%; height: 100%; object-fit: cover; }
+    .pulse-icon { font-size: 2.5rem; color: var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-    /* SUCCESS SCREEN */
-    .success-screen { text-align: center; color: white; }
-    .dance-anim { width: 180px; margin-bottom: 20px; }
-    .btn-back { display: inline-block; margin-top: 20px; color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 10px 25px; border-radius: 20px; }
+    /* PENDENTE */
+    .mini-frame { width: 110px; height: 150px; margin: 0 auto 20px; position: relative; border-radius: 12px; overflow: hidden; border: 2px solid var(--accent); }
+    .mini-frame img { width: 100%; height: 100%; object-fit: cover; }
+    .badge-pending { position: absolute; bottom: 0; width: 100%; background: var(--accent); font-size: 0.6rem; padding: 4px 0; font-weight: 800; }
+    .timer-box { color: #f1c40f; font-size: 0.8rem; margin-bottom: 15px; font-weight: 700; }
 
-    /* ADS */
-    .ads-card-premium { background: var(--glass); border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); }
-    .ad-label { font-size: 9px; color: white; opacity: 0.5; padding: 5px 15px; }
-    .ads-card-premium img { width: 100%; height: 120px; object-fit: cover; }
-    .ad-info { padding: 10px; color: white; font-size: 10px; text-align: center; }
-
-    /* LOADER */
-    .custom-loader { width: 40px; height: 40px; border: 4px solid var(--glass-border); border-top-color: var(--success); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    /* BUTTONS */
+    .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: var(--accent); color: white; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(142, 68, 173, 0.2); }
+    .btn-main.disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-outline { display: inline-block; margin-top: 15px; color: var(--text-dim); text-decoration: none; font-size: 0.75rem; border-bottom: 1px solid var(--text-dim); }
+    .text-center { text-align: center; }
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    let currentIndex = 0;
-    const cards = document.querySelectorAll('.company-card-premium');
-    const totalCompanies = cards.length;
+    // Início: Verifica o estado inicial pelo Django
+    document.addEventListener("DOMContentLoaded", () => {
+        const completed = {{ tasks_completed_today|default:0 }};
+        if (completed >= 1) {
+            switchTab('step-done', 'nav-done');
+        }
+    });
 
-    function updateSlider() {
-        cards.forEach(card => card.style.display = 'none');
-        // Exibe 2 por vez (ou 1 se for o último)
-        if(cards[currentIndex]) cards[currentIndex].style.display = 'block';
-        if(cards[currentIndex + 1]) cards[currentIndex + 1].style.display = 'block';
+    function switchTab(stepId, navId) {
+        document.querySelectorAll('.ad-step').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        document.getElementById(stepId).classList.add('active');
+        document.getElementById(navId).classList.add('active');
     }
 
-    document.getElementById('next-btn').addEventListener('click', () => {
-        currentIndex += 2;
-        if (currentIndex >= totalCompanies) currentIndex = 0;
-        updateSlider();
-    });
-
-    // Inicializa o slider
-    updateSlider();
-
-    const btnEvals = document.querySelectorAll('.btn-start-eval');
-    const starBtns = document.querySelectorAll('.star-btn');
-    const finalSubmit = document.getElementById('final-submit');
-    const sectionSelect = document.getElementById('section-select');
-    const sectionRate = document.getElementById('section-rate');
-    const sectionDone = document.getElementById('section-done');
-    const evalName = document.getElementById('eval-name');
-
-    if ({{ tasks_completed_today|default:0 }} >= 1) {
-        showSection('done');
+    // Só permite trocar de aba manualmente para Pendente ou Concluído se estiverem ativos
+    function handleNavClick(stepId) {
+        if (stepId === 'step-links' && {{ tasks_completed_today|default:0 }} == 0) {
+            switchTab('step-links', 'nav-link');
+        }
     }
 
-    btnEvals.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const company = btn.parentElement.querySelector('h3').innerText;
-            evalName.innerText = company;
-            showSection('rate');
-        });
-    });
+    function goToUpload() {
+        setTimeout(() => {
+            switchTab('step-upload', 'nav-upload');
+        }, 1500); // Dá tempo do usuário clicar no link
+    }
 
-    starBtns.forEach(star => {
-        star.addEventListener('click', function() {
-            const val = this.getAttribute('data-value');
-            starBtns.forEach(s => {
-                s.classList.remove('active');
-                if (s.getAttribute('data-value') <= val) s.classList.add('active');
-            });
-            finalSubmit.disabled = false;
-            finalSubmit.classList.add('ready');
-        });
-    });
+    function handlePreview(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const img = document.getElementById('img-preview');
+            const placeholder = document.getElementById('up-placeholder');
+            const finalImg = document.getElementById('final-preview');
+            
+            img.src = reader.result;
+            finalImg.src = reader.result;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
 
-    finalSubmit.addEventListener('click', function() {
-        this.style.display = 'none';
-        document.getElementById('load-box').style.display = 'block';
+            const btn = document.getElementById('btn-submit');
+            btn.classList.remove('disabled');
+            btn.disabled = false;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
 
+    function submitTask() {
+        const btn = document.getElementById('btn-submit');
+        btn.innerText = "Sincronizando...";
+        btn.disabled = true;
+
+        // Requisição POST real para sua views.py
         fetch("{% url 'process_task' %}", {
             method: 'POST',
             headers: {
@@ -346,27 +235,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 'X-CSRFToken': '{{ csrf_token }}'
             }
         })
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            setTimeout(() => {
-                if (data.success) {
-                    showSection('done');
-                } else {
-                    alert(data.message);
-                    location.reload();
-                }
-            }, 2000);
+            if (data.success) {
+                switchTab('step-pending', 'nav-pending');
+            } else {
+                alert(data.message);
+                location.reload();
+            }
         });
-    });
-
-    function showSection(type) {
-        sectionSelect.style.display = 'none';
-        sectionRate.style.display = 'none';
-        sectionDone.style.display = 'none';
-        if (type === 'rate') sectionRate.style.display = 'block';
-        else if (type === 'done') sectionDone.style.display = 'block';
-        else sectionSelect.style.display = 'block';
     }
-});
 </script>
 {% endblock %}

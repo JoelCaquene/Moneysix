@@ -1,5 +1,5 @@
 """
-Django settings for angowork project.
+Django settings for bbdo project.
 Configurado para Testagem Local e Produção no Render.com.
 """
 
@@ -31,9 +31,9 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 # ADICIONADO: Seus domínios personalizados para produção
 ALLOWED_HOSTS.extend([
-    'angowork.art',
-    'www.angowork.art',
-    'angowork.onrender.com'
+    'bbdo.art',
+    'www.bbdo.art',
+    'bbdo.onrender.com'
 ])
 
 # Configuração de origens confiáveis para CSRF
@@ -67,7 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'angowork.urls'
+ROOT_URLCONF = 'bbdo.urls'
 
 TEMPLATES = [
     {
@@ -86,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'angowork.wsgi.application'
+WSGI_APPLICATION = 'bbdo.wsgi.application'
 
 # ======================================================================
 # DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO)

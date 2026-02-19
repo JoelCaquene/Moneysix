@@ -1,8 +1,9 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.safestring import mark_safe 
 from .models import (
     CustomUser, PlatformSettings, Level, BankDetails, Deposit, 
-    Withdrawal, Task, Roulette, RouletteSettings, UserLevel, PlatformBankDetails
+    Withdrawal, Task, Roulette, UserLevel, PlatformBankDetails,
+    PromoCode, PromoCodeUsage
 )
 
 # --- CONFIGURAÇÕES DO USUÁRIO ---
@@ -15,7 +16,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     ordering = ('-date_joined',)
     list_editable = ('free_days_count',)
 
-# --- CONFIGURAÇÕES DE DEPÓSITO ---
+# --- CONFIGURAÇÕES DE DEPÓSITO (COM SOMA AUTOMÁTICA) ---
 
 @admin.register(Deposit)
 class DepositAdmin(admin.ModelAdmin):
@@ -36,6 +37,21 @@ class DepositAdmin(admin.ModelAdmin):
         }),
     )
 
+    def save_model(self, request, obj, form, change):
+        """
+        Lógica para somar o saldo automaticamente ao aprovar
+        """
+        if change: # Se o registro está sendo editado
+            old_obj = Deposit.objects.get(pk=obj.pk)
+            # Se mudou de NÃO aprovado para APROVADO agora
+            if not old_obj.is_approved and obj.is_approved:
+                user = obj.user
+                user.available_balance += obj.amount
+                user.save()
+                messages.success(request, f"Saldo de {obj.amount} KZ adicionado a {user.phone_number}!")
+        
+        super().save_model(request, obj, form, change)
+
     def proof_link(self, obj):
         if obj.proof_of_payment:
             return mark_safe(f'<a href="{obj.proof_of_payment.url}" target="_blank" style="color: #2e7d32; font-weight: bold;">Ver Imagem</a>')
@@ -53,11 +69,10 @@ class DepositAdmin(admin.ModelAdmin):
         return "Nenhum Comprovativo Carregado"
     current_proof_display.short_description = 'Foto do Comprovativo'
 
-# --- CONFIGURAÇÕES DE SAQUE (AQUI ESTÁ A MUDANÇA!) ---
+# --- CONFIGURAÇÕES DE SAQUE ---
 
 @admin.register(Withdrawal)
 class WithdrawalAdmin(admin.ModelAdmin):
-    # ADICIONADO: 'dados_bancarios_cliente' para aparecer na lista principal
     list_display = ('user', 'amount', 'status', 'dados_bancarios_cliente', 'created_at')
     search_fields = ('user__phone_number', 'withdrawal_details')
     list_filter = ('status', 'method', 'created_at')
@@ -74,11 +89,9 @@ class WithdrawalAdmin(admin.ModelAdmin):
             'fields': ('created_at',),
         }),
     )
-    # Criamos um campo de leitura para mostrar os dados do perfil do usuário
     readonly_fields = ('created_at', 'dados_completos_perfil')
 
     def dados_bancarios_cliente(self, obj):
-        # Tenta buscar o IBAN do modelo BankDetails ligado ao usuário
         try:
             return obj.user.bank_details.IBAN
         except:
@@ -86,7 +99,6 @@ class WithdrawalAdmin(admin.ModelAdmin):
     dados_bancarios_cliente.short_description = 'IBAN (Perfil)'
 
     def dados_completos_perfil(self, obj):
-        # Mostra todos os dados do banco dentro do formulário de edição
         try:
             dados = obj.user.bank_details
             return mark_safe(f"""
@@ -100,11 +112,25 @@ class WithdrawalAdmin(admin.ModelAdmin):
             return "O cliente ainda não preencheu os dados bancários no perfil."
     dados_completos_perfil.short_description = 'Dados Bancários no Perfil'
 
+# --- SISTEMA DE SORTEIO (CUPONS) ---
+
+@admin.register(PromoCode)
+class PromoCodeAdmin(admin.ModelAdmin):
+    list_display = ('code', 'value', 'is_active', 'created_at')
+    search_fields = ('code',)
+    list_editable = ('is_active', 'value')
+
+@admin.register(PromoCodeUsage)
+class PromoCodeUsageAdmin(admin.ModelAdmin):
+    list_display = ('user', 'promo_code', 'prize_won', 'used_at')
+    list_filter = ('used_at', 'promo_code')
+    search_fields = ('user__phone_number', 'promo_code__code')
+
 # --- NÍVEIS E PLATAFORMA ---
 
 @admin.register(PlatformSettings)
 class PlatformSettingsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'whatsapp_link', 'history_text', 'deposit_instruction', 'withdrawal_instruction')
+    list_display = ('id', 'whatsapp_link')
 
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
@@ -114,35 +140,23 @@ class LevelAdmin(admin.ModelAdmin):
 @admin.register(PlatformBankDetails)
 class PlatformBankDetailsAdmin(admin.ModelAdmin):
     list_display = ('bank_name', 'account_holder_name', 'IBAN')
-    search_fields = ('bank_name', 'account_holder_name')
 
 # --- TAREFAS E HISTÓRICO ---
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ('user', 'earnings', 'task_day', 'completed_at')
-    search_fields = ('user__phone_number',)
     list_filter = ('task_day', 'completed_at')
 
 @admin.register(UserLevel)
 class UserLevelAdmin(admin.ModelAdmin):
     list_display = ('user', 'level', 'purchase_date', 'is_active')
-    search_fields = ('user__phone_number', 'level__name')
-    list_filter = ('is_active', 'level')
-
-# --- ROLETA ---
 
 @admin.register(Roulette)
 class RouletteAdmin(admin.ModelAdmin):
-    list_display = ('user', 'prize', 'is_approved', 'spin_date')
-    list_filter = ('is_approved',)
-
-@admin.register(RouletteSettings)
-class RouletteSettingsAdmin(admin.ModelAdmin):
-    list_display = ('id', 'prizes')
+    list_display = ('user', 'prize', 'spin_date')
 
 @admin.register(BankDetails)
 class BankDetailsAdmin(admin.ModelAdmin):
     list_display = ('user', 'bank_name', 'account_holder_name', 'IBAN')
-    search_fields = ('user__phone_number', 'bank_name', 'IBAN')
     

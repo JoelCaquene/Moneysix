@@ -11,12 +11,14 @@ import random
 from datetime import date, time, datetime
 from django.utils import timezone
 from decimal import Decimal
+from datetime import date, timedelta # Certifique-se de ter este import
+import json  # <--- ADICIONE ESTA LINHA AQUI
 
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 
 from .forms import RegisterForm, DepositForm, WithdrawalForm, BankDetailsForm
-from .models import PlatformSettings, CustomUser, Level, UserLevel, BankDetails, Deposit, Withdrawal, Task, PlatformBankDetails, Roulette, RouletteSettings
+from .models import PlatformSettings, CustomUser, Level, UserLevel, BankDetails, Deposit, Withdrawal, Task, PlatformBankDetails, Roulette, PromoCode, PromoCodeUsage
 
 # --- ADICIONE ESTA CLASSE LOGO ABAIXO DOS IMPORTS ---
 class MyPasswordChangeView(PasswordChangeView):
@@ -434,48 +436,79 @@ def equipa(request):
     }
     return render(request, 'equipa.html', context)
 
-# --- ROLETA ---
 @login_required
-def roleta(request):
-    user = request.user
-    roulette_settings = RouletteSettings.objects.first()
-    prizes_list = [p.strip() for p in roulette_settings.prizes.split(',')] if roulette_settings and roulette_settings.prizes else ['0', '500', '1000', '0', '5000', '200', '0', '10000']
-    recent_winners = Roulette.objects.filter(is_approved=True).order_by('-spin_date')[:10]
-    context = {'roulette_spins': user.roulette_spins, 'prizes_list': prizes_list, 'recent_winners': recent_winners}
-    return render(request, 'roleta.html', context)
+def sorteio_view(request):
+    """
+    Renderiza a página de sorteio e mostra os últimos ganhadores.
+    """
+    # IMPORTANTE: No models.py deve existir o modelo PromoCodeUsage que criamos
+    # Se ainda não criou o modelo, use o histórico da antiga Roulette por enquanto
+    try:
+        from .models import PromoCodeUsage
+        recent_winners = PromoCodeUsage.objects.select_related('user').order_by('-used_at')[:15]
+    except ImportError:
+        # Fallback caso ainda não tenha migrado o model
+        recent_winners = Roulette.objects.filter(is_approved=True).order_by('-spin_date')[:15]
+
+    return render(request, 'sorteio.html', {'recent_winners': recent_winners})
 
 @login_required
 @require_POST
-def spin_roulette(request):
-    user = request.user
-    if not user.roulette_spins or user.roulette_spins <= 0:
-        return JsonResponse({'success': False, 'message': 'Sem giros disponíveis.'})
+def validar_codigo_sorteio(request):
+    """
+    Valida o código inserido, distribui o saldo e subsídio, e bloqueia uso repetido no dia.
+    """
+    try:
+        from .models import PromoCode, PromoCodeUsage
+        data = json.loads(request.body)
+        input_code = data.get('code', '').strip().upper()
+        user = request.user
+        today = timezone.localdate()
 
-    roulette_settings = RouletteSettings.objects.first()
-    prizes_raw = [p.strip() for p in roulette_settings.prizes.split(',')] if roulette_settings and roulette_settings.prizes else ['0', '500', '1000', '0', '5000', '200', '0', '10000']
-    
-    weighted_pool = []
-    for p in prizes_raw:
-        val = Decimal(p)
-        if val == 0: weighted_pool.extend([p] * 10)
-        elif val <= 500: weighted_pool.extend([p] * 5)
-        else: weighted_pool.append(p)
+        # 1. Validação de segurança: Um código por dia por usuário
+        ja_usou_hoje = PromoCodeUsage.objects.filter(user=user, used_at__date=today).exists()
+        if ja_usou_hoje:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Você já participou do sorteio hoje. Volte amanhã!'
+            })
 
-    winning_prize_str = random.choice(weighted_pool)
-    prize_amount = Decimal(winning_prize_str)
-    
-    user.roulette_spins -= 1
-    user.subsidy_balance += prize_amount
-    user.available_balance += prize_amount
-    user.save()
-    
-    Roulette.objects.create(user=user, prize=prize_amount, is_approved=True)
+        # 2. Verifica se o código existe no sistema e está ativo
+        try:
+            promo = PromoCode.objects.get(code=input_code, is_active=True)
+        except PromoCode.DoesNotExist:
+            return JsonResponse({
+                'success': False, 
+                'message': 'Código inválido ou expirado.'
+            })
 
-    return JsonResponse({
-        'success': True, 
-        'prize': winning_prize_str, 
-        'remaining_spins': user.roulette_spins
-    })
+        # 3. LÓGICA DE GANHO (OBEDIENTE: SALDO + SUBSÍDIO)
+        prize_amount = promo.value
+        
+        user.available_balance += prize_amount
+        user.subsidy_balance += prize_amount
+        user.save()
+
+        # 4. Registra no histórico de usos
+        PromoCodeUsage.objects.create(
+            user=user, 
+            promo_code=promo, 
+            prize_won=prize_amount
+        )
+
+        # 5. Também registra na tabela antiga de Roleta para manter compatibilidade de histórico se desejar
+        Roulette.objects.create(user=user, prize=prize_amount, is_approved=True)
+
+        return JsonResponse({
+            'success': True,
+            'prize': str(prize_amount),
+            'message': 'Código resgatado com sucesso!'
+        })
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Erro no servidor: {str(e)}'})
+
+# --- SOBRE E PERFIL (MANTIDOS) ---
 
 # --- SOBRE E PERFIL ---
 @login_required
@@ -508,20 +541,54 @@ def perfil(request):
 @login_required
 def renda(request):
     user = request.user
-    active_level = UserLevel.objects.filter(user=user, is_active=True).first()
-    approved_deposit_total = Deposit.objects.filter(user=user, is_approved=True).aggregate(Sum('amount'))['amount__sum'] or 0
-    today = date.today()
-    daily_income = Task.objects.filter(user=user, completed_at__date=today).aggregate(Sum('earnings'))['earnings__sum'] or 0
-    total_withdrawals = Withdrawal.objects.filter(user=user, status='Aprovado').aggregate(Sum('amount'))['amount__sum'] or 0
-    total_income = (Task.objects.filter(user=user).aggregate(Sum('earnings'))['earnings__sum'] or 0) + user.subsidy_balance
+    today = timezone.localdate() #
+    yesterday = today - timedelta(days=1) #
     
+    # Datas para cálculo mensal
+    first_day_current_month = today.replace(day=1) #
+    last_day_last_month = first_day_current_month - timedelta(days=1) #
+    first_day_last_month = last_day_last_month.replace(day=1) #
+
+    # 1. Receita de Hoje
+    receita_hoje = Task.objects.filter(
+        user=user, completed_at__date=today
+    ).aggregate(Sum('earnings'))['earnings__sum'] or 0 #
+
+    # 2. Receita de Ontem
+    receita_ontem = Task.objects.filter(
+        user=user, completed_at__date=yesterday
+    ).aggregate(Sum('earnings'))['earnings__sum'] or 0 #
+
+    # 3. Receita deste Mês
+    receita_mes_atual = Task.objects.filter(
+        user=user, completed_at__date__gte=first_day_current_month
+    ).aggregate(Sum('earnings'))['earnings__sum'] or 0 #
+
+    # 4. Receita do Mês Anterior
+    receita_mes_anterior = Task.objects.filter(
+        user=user, 
+        completed_at__date__gte=first_day_last_month,
+        completed_at__date__lte=last_day_last_month
+    ).aggregate(Sum('earnings'))['earnings__sum'] or 0 #
+
+    # 5. Tarefas Concluídas Hoje (Contagem)
+    tarefa_hoje_count = Task.objects.filter(
+        user=user, completed_at__date=today
+    ).count() #
+
+    # 6. Total Sacado com Sucesso
+    total_sacado = Withdrawal.objects.filter(
+        user=user, status='Aprovado'
+    ).aggregate(Sum('amount'))['amount__sum'] or 0 #
+
     context = {
         'user': user,
-        'active_level': active_level,
-        'approved_deposit_total': approved_deposit_total,
-        'daily_income': daily_income,
-        'total_withdrawals': total_withdrawals,
-        'total_income': total_income,
+        'receita_hoje': receita_hoje,
+        'receita_ontem': receita_ontem,
+        'receita_mes_atual': receita_mes_atual,
+        'receita_mes_anterior': receita_mes_anterior,
+        'tarefa_hoje_count': tarefa_hoje_count,
+        'total_sacado': total_sacado,
     }
-    return render(request, 'renda.html', context)
+    return render(request, 'renda.html', context) #
     

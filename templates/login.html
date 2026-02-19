@@ -1,328 +1,243 @@
 {% load static %}
-{% load i18n %} <!DOCTYPE html>
+{% load i18n %}
+<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>angowork - {% trans "Login" %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>BBDO - {% trans "Login" %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --primary-blue: #0055a4;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.3);
+            --bg-purple: #4a00ac; 
+            --btn-gold-start: #ccab66; 
+            --btn-gold-end: #937438;
+            --btn-black: #000000;
+            --input-bg: #f3f7ff; 
+            --logo-red: #ff0000; 
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
+            background-color: var(--bg-purple);
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url("{% static 'background_cad.jpg' %}") no-repeat center center fixed;
-            background-size: cover;
-            color: #fff;
-            overflow-x: hidden;
-        }
-
-        /* SELETOR DE IDIOMA NO TOPO */
-        .language-header {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            justify-content: flex-end;
-            padding: 15px;
-            z-index: 10;
-        }
-
-        .lang-select {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(5px);
-            border-radius: 8px;
-            padding: 8px;
-            font-size: 0.85rem;
-            outline: none;
-        }
-        
-        .lang-select option { color: #333; }
-
-        .header-logo {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 30px 0;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-bottom: 1px solid var(--glass-border);
-            margin-bottom: 20px;
+            min-height: 100vh;
         }
 
-        .header-logo img {
-            height: 110px;
-            width: auto;
-            object-fit: contain;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.2));
-        }
-
-        .platform-text {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #fff;
-            margin-top: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .login-container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            padding: 40px 25px;
+        .main-wrapper {
             width: 100%;
-            max-width: 500px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            text-align: center;
-            border: 1px solid var(--glass-border);
-            border-radius: 20px 20px 0 0;
-        }
-
-        h2 {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            color: var(--primary-blue);
-            font-weight: 700;
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-            text-align: left;
-        }
-
-        .form-group label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: block;
-            color: #222;
-            text-transform: uppercase;
-        }
-
-        .input-wrapper {
+            max-width: 450px;
+            height: 100vh;
+            background-color: var(--bg-purple);
             position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
+            overflow: hidden;
         }
 
-        .country-select-wrapper {
-            position: absolute;
-            left: 12px;
+        /* AJUSTE DO TOPO BRANCO */
+        .top-wave-container {
+            width: 100%;
+            background-color: #ffffff;
+            height: 32vh; /* Ajustado para dar espaço à curva */
+            position: relative;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 5px;
-            padding-right: 8px;
-            border-right: 1px solid #ddd;
-            z-index: 5;
+            z-index: 1;
         }
 
-        .country-select-wrapper select {
-            background: transparent;
-            border: none;
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary-blue);
-            cursor: pointer;
-            outline: none;
-            appearance: none;
+        /* SVG REFEITO PARA IMITAR A CURVA DA IMAGEM E A LINHA VERMELHA */
+        .wave-svg {
+            position: absolute;
+            bottom: -58px; /* Encaixe preciso */
+            left: 0;
+            width: 100%;
+            height: 80px;
+        }
+
+        .header-section .logo-text {
+            font-family: 'Noto Serif', serif; 
+            font-size: 80px; 
+            color: var(--logo-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* CARD DE LOGIN */
+        .login-card {
+            background: #ffffff;
+            width: 90%; 
+            border-radius: 35px; 
+            padding: 40px 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10;
+            margin-top: 50px; /* Deslocado para baixo da curva */
+        }
+
+        .form-group { position: relative; margin-bottom: 20px; }
+
+        .form-group i.input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8e8e8e;
+            font-size: 1.2rem;
         }
 
         .auth-form input {
             width: 100%;
-            padding: 18px 15px 18px 95px;
-            border: 1.5px solid rgba(0,0,0,0.1);
+            padding: 18px 20px 18px 60px; 
+            border: none;
+            background-color: var(--input-bg);
             border-radius: 12px;
-            background: rgba(255,255,255,0.9);
-            font-size: 1rem;
-            color: #000;
-            transition: 0.3s;
+            font-size: 1.1rem; 
             outline: none;
         }
 
-        .password-input {
-            padding-left: 55px !important;
+        .options-row {
+            display: flex;
+            align-items: center;
+            margin: 20px 0 30px 5px;
+            color: #9ea4b0;
+            font-size: 0.9rem;
         }
 
-        .input-wrapper i.main-icon {
-            position: absolute;
-            left: 18px;
-            font-size: 1.2rem;
-            color: var(--primary-blue);
+        .options-row input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: var(--bg-purple); 
+            width: 18px;
+            height: 18px;
         }
+
+        .btn-entrar {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 40px; 
+            background: linear-gradient(to bottom, var(--btn-gold-start), var(--btn-gold-end));
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-registrar {
+            width: 100%;
+            padding: 18px;
+            margin-top: 15px;
+            border-radius: 40px; 
+            background-color: var(--btn-black);
+            color: white;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* ÍCONE DO CAMINHÃO IGUAL À FOTO */
+        .btn-registrar img {
+            width: 40px;
+            margin-left: 10px;
+        }
+
+        .or-divider { text-align: center; color: #d1d1d1; margin: 15px 0; }
+
+        .support-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            text-align: center;
+            text-decoration: none;
+            z-index: 20;
+        }
+
+        .support-container img { width: 50px; display: block; margin: 0 auto; }
+        .support-container span { color: white; font-size: 0.8rem; }
 
         .toggle-password {
             position: absolute;
-            right: 15px;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             cursor: pointer;
-            color: #666;
-            z-index: 10;
-        }
-
-        .submit-button {
-            width: 100%;
-            padding: 20px;
-            border: none;
-            border-radius: 12px;
-            background: var(--primary-blue);
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            text-transform: uppercase;
-            box-shadow: 0 8px 15px rgba(0,85,164,0.3);
-        }
-
-        .auth-tabs-bottom {
-            display: flex;
-            width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 0 0 20px 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid var(--glass-border);
-            border-top: none;
-            margin-bottom: 40px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 22px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #777;
-            background: rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            background: white;
-            color: var(--primary-blue);
-            border-top: 4px solid var(--primary-blue);
-        }
-
-        @media (max-width: 500px) {
-            .login-container, .auth-tabs-bottom { width: 95%; }
+            color: #8e8e8e;
         }
     </style>
 </head>
 <body>
 
-    <div class="language-header">
-        <form action="{% url 'set_language' %}" method="post" id="lang-form">
-            {% csrf_token %}
-            <input name="next" type="hidden" value="{{ request.path }}">
-            <select name="language" class="lang-select" onchange="this.form.submit()">
-                {% get_current_language as CURRENT_LANG %}
-                <option value="pt" {% if CURRENT_LANG == 'pt' %}selected{% endif %}>Português 🇵🇹</option>
-                <option value="en" {% if CURRENT_LANG == 'en' %}selected{% endif %}>English 🇺🇸</option>
-                <option value="fr" {% if CURRENT_LANG == 'fr' %}selected{% endif %}>Français 🇫🇷</option>
-            </select>
-        </form>
-    </div>
+    <div class="main-wrapper">
+        <div class="top-wave-container">
+            <div class="header-section">
+                <div class="logo-text">BBDO</div>
+            </div>
+            <svg class="wave-svg" viewBox="0 0 500 150" preserveAspectRatio="none">
+                <path d="M0,45 C150,140 350,-40 500,45 L500,0 L0,0 Z" fill="none" stroke="#ff0000" stroke-width="3"></path>
+                <path d="M0,50 C150,150 350,-50 500,50 L500,0 L0,0 Z" fill="#ffffff"></path>
+            </svg>
+        </div>
 
-    <header class="header-logo">
-        <img src="{% static 'logo.png' %}" alt="angowork">
-        <div class="platform-text">{% trans "Plataforma de Rendimento online" %}</div>
-    </header>
-
-    <div class="login-container">
-        <h2>{% trans "Acesse sua conta" %}</h2>
-
-        <form method="post" class="auth-form">
-            {% csrf_token %}
-
-            <div class="form-group">
-                <label>{% trans "Número de Telefone" %}</label>
-                <div class="input-wrapper">
-                    <div class="country-select-wrapper">
-                        <span id="flag-display">🇦🇴</span>
-                        <select id="country-code" name="country_code">
-                            <option value="+244" data-flag="🇦🇴">+244</option>
-                            <option value="+351" data-flag="🇵🇹">+351</option>
-                            <option value="+55" data-flag="🇧🇷">+55</option>
-                            <option value="+1" data-flag="🇺🇸">+1</option>
-                        </select>
-                        <i class="fa-solid fa-caret-down" style="font-size: 0.7rem; color: #999;"></i>
-                    </div>
+        <div class="login-card">
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <i class="fa-solid fa-user input-icon"></i>
                     {{ form.username }}
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label>{% trans "Sua Senha" %}</label>
-                <div class="input-wrapper">
-                    <i class="fa-solid fa-key main-icon"></i>
-                    <div style="width: 100%;" class="pass-adjust">
-                        {{ form.password }}
-                    </div>
-                    <i class="fa-solid fa-eye-low-vision toggle-password" id="toggleLoginPass"></i>
+                <div class="form-group">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    {{ form.password }}
+                    <i class="fa-solid fa-eye-slash toggle-password" id="togglePass"></i>
                 </div>
-            </div>
+                <div class="options-row">
+                    <input type="checkbox" id="remember" checked>
+                    <label for="remember">{% trans "Lembrar ID de Usuário/Senha" %}</label>
+                </div>
+                <button type="submit" class="btn-entrar">
+                    {% trans "Entrando..." %}
+                </button>
+                <div class="or-divider">or</div>
+                <a href="{% url 'cadastro' %}" class="btn-registrar">
+                    {% trans "Registar-se" %}
+                    <img src="https://cdn-icons-png.flaticon.com/512/2554/2554978.png" alt="truck">
+                </a>
+            </form>
+        </div>
 
-            <button type="submit" class="submit-button">
-                <span>{% trans "Entrar" %}</span>
-                <i class="fa-solid fa-right-to-bracket"></i>
-            </button>
-        </form>
-    </div>
-
-    <div class="auth-tabs-bottom">
-        <a href="#" class="tab-btn active">Login</a>
-        <a href="{% url 'cadastro' %}" class="tab-btn">{% trans "Cadastro" %}</a>
+        <a href="#" class="support-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/6009/6009132.png" alt="Suporte">
+            <span>{% trans "Suporte Online" %}</span>
+        </a>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const usernameInput = document.querySelector('input[name="username"]');
-            const passwordInput = document.querySelector('input[name="password"]');
+            const userInp = document.querySelector('input[name="username"]');
+            const passInp = document.querySelector('input[name="password"]');
+            if(userInp) userInp.placeholder = '940000000';
+            if(passInp) passInp.placeholder = '..........';
 
-            if(usernameInput) usernameInput.placeholder = '9xx xxx xxx';
-            if(passwordInput) {
-                passwordInput.placeholder = '{% trans "Digite sua senha" %}';
-                passwordInput.classList.add('password-input');
-            }
-
-            const countrySelect = document.getElementById('country-code');
-            const flagDisplay = document.getElementById('flag-display');
-
-            countrySelect.addEventListener('change', function() {
-                const selectedOption = this.options[this.selectedIndex];
-                flagDisplay.textContent = selectedOption.getAttribute('data-flag');
-            });
-
-            const toggleBtn = document.querySelector('#toggleLoginPass');
-            if (toggleBtn && passwordInput) {
-                toggleBtn.addEventListener('click', function() {
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    this.classList.toggle('fa-eye-low-vision');
+            const togglePass = document.getElementById('togglePass');
+            if(togglePass && passInp) {
+                togglePass.addEventListener('click', function() {
+                    const type = passInp.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passInp.setAttribute('type', type);
                     this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
                 });
             }
         });

@@ -1,316 +1,261 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}ANGOWORK - Dashboard Profissional{% endblock %}
+{% block title %}BBDO - Home{% endblock %}
 
 {% block content %}
-{# 1. MODAL DE BOAS-VINDAS PERSONALIZADO #}
-<div id="welcomeModal" class="modal-overlay">
-    <div class="modal-content-custom glass-effect animate-in">
-        <div class="modal-header-custom">
-            <h2 class="modal-logo">ANGOWORK</h2>
-            <p class="modal-subtitle">Informativo Oficial</p>
-        </div>
-        
-        <div class="modal-body-scroll">
-            <div class="info-item">
-                <i class="fas fa-calendar-alt"></i>
-                <p><strong>Horário:</strong> Segunda a Sábado (Domingo não prestamos serviços).</p>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-clock"></i>
-                <p><strong>Atendimento:</strong> 08:30 às 20:00.</p>
-            </div>
-            
-            <hr class="modal-divider">
-            
-            <div class="modal-text-content">
-                <p>Não somos uma plataforma de investimento, mas sim uma <strong>empresa de rendimento online</strong>.</p>
-                <p>O seu depósito servirá de garantia do seu compromisso com a empresa.</p>
-                <p>Após <strong>1 ano de serviço</strong> contínuo, o seu valor de garantia será totalmente reembolsado.</p>
-            </div>
-
-            <a href="{{ whatsapp_link }}" target="_blank" class="btn-whatsapp-custom">
-                <div class="whatsapp-icon-animate">
-                    <i class="fab fa-whatsapp"></i>
-                </div>
-                <span>ENTRAR NO GRUPO GERAL</span>
-            </a>
-        </div>
-
-        <div class="modal-footer-custom">
-            <button class="btn-close-modal-new" onclick="closeModal()">CONCORDAR E CONTINUAR</button>
-        </div>
-    </div>
-</div>
-
-<div class="forex-dashboard">
+<div class="app-container">
     
-    {# TOPO SUPERIOR COM BOTÃO DE DOWNLOAD #}
-    <div class="top-header">
-        <a href="{% url 'logout' %}" class="btn-sair-topo">SAIR</a>
-        <h1 class="logo-angowork">ANGOWORK</h1>
+    <header class="main-header">
+        <div class="header-top-row">
+            <h1 class="hero-title">Un buon lavoro<br>Vieni a BBDO</h1>
+            <div class="logo-container">
+                <img src="{% static 'images/bbdo_logo_red.png' %}" alt="BBDO" class="bbdo-logo-top">
+            </div>
+        </div>
         
-        <a href="{% static 'app/angowork.apk' %}" download class="btn-download-app">
-            <i class="fas fa-download"></i>
-            <span>APP</span>
-        </a>
-    </div>
+        <div class="banner-wrapper">
+            <img src="{% static 'images/banner_bbdo.png' %}" class="main-banner-img" alt="World Team">
+            <div class="carousel-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+    </header>
 
-    {# PAINEL DE INDICADORES (6 INDICADORES) #}
-    <div class="indicators-grid glass-effect">
-        <div class="indicator-sq">
-            <span class="ind-label">Função</span>
-            <span class="ind-value">{% if active_level %}{{ active_level.level.name }}{% else %}Função 0{% endif %}</span>
-        </div>
-        <div class="indicator-sq">
-            <span class="ind-label">Saldo</span>
-            <span class="ind-value">KZ {{ user.available_balance|default:"0.00" }}</span>
-        </div>
-        <div class="indicator-sq">
-            <span class="ind-label">Garantia</span>
-            <span class="ind-value">KZ {{ approved_deposit_total|default:"0" }}</span>
-        </div>
-        
-        <div class="indicator-sq">
-            <span class="ind-label">HOJE</span>
-            <span class="ind-value">KZ {{ daily_income|default:"0.00" }}</span>
-        </div>
-        <div class="indicator-sq">
-            <span class="ind-label">Subsídios</span>
-            <span class="ind-value">KZ {{ user.subsidy_balance|default:"0.00" }}</span>
-        </div>
-        <div class="indicator-sq">
-            <span class="ind-label">SAQUES APROVADOS</span>
-            <span class="ind-value">KZ {{ total_withdrawals|default:"0.00" }}</span>
+    <div class="news-ticker">
+        <i class="fas fa-volume-up speaker-icon"></i>
+        <div class="ticker-content">
+            <marquee scrollamount="3">Bem-vindo à BBDO, é uma das redes de agências de publicidade mais prestigiadas do mundo. Com Sede em Nova York</marquee>
         </div>
     </div>
 
-    {# GRID DE AÇÕES #}
-    <div class="action-grid glass-effect">
-        <a href="{% url 'deposito' %}" class="action-item">
-            <div class="icon-box-dark"><i class="fas fa-piggy-bank"></i></div>
-            <span>Garantia</span>
-        </a>
-        <a href="{% url 'tarefa' %}" class="action-item">
-            <div class="icon-box-dark"><i class="fas fa-briefcase"></i></div>
-            <span>Actividade</span>
-        </a>
-        <a href="{% url 'nivel' %}" class="action-item">
-            <div class="icon-box-dark"><i class="fas fa-crown"></i></div>
-            <span>Função</span>
-        </a>
-        <a href="{% url 'sobre' %}" class="action-item">
-            <div class="icon-box-dark"><i class="fas fa-bullhorn"></i></div>
-            <span>Tutoria</span>
-        </a>
+    <section class="mission-section">
+        <h2 class="section-label">Mission Hall</h2>
+        <div class="bbdo-card-gold">
+            <div class="card-left">
+                <span class="card-brand">BBDO</span>
+            </div>
+            <div class="card-right">
+                <div class="golden-letter">B</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="actions-grid">
         <a href="{% url 'saque' %}" class="action-item">
-            <div class="icon-box-dark"><i class="fas fa-hand-holding-dollar"></i></div>
-            <span>ATM</span>
+            <div class="icon-box border-red">
+                <img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" class="icon-img-red">
+            </div>
+            <span class="btn-text">Retiradas</span>
         </a>
-    </div>
 
-    {# NOVA SEÇÃO: CARROSSEL DE IMAGENS (SUBSTITUINDO OS CONTACTOS) #}
-    <div class="carousel-container glass-effect">
-        <div class="carousel-slide">
-            <img src="{% static 'images/banner1.jpg' %}" class="carousel-img active">
-            <img src="{% static 'images/banner2.jpg' %}" class="carousel-img">
-            <img src="{% static 'images/banner3.jpg' %}" class="carousel-img">
-            <img src="{% static 'images/banner4.jpg' %}" class="carousel-img">
-            <img src="{% static 'images/banner5.jpg' %}" class="carousel-img">
-        </div>
-    </div>
+        <a href="{% url 'deposito' %}" class="action-item">
+            <div class="icon-box bg-red">
+                <img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" class="icon-img-white">
+            </div>
+            <span class="btn-text">Depósito</span>
+        </a>
 
-    {# BARRA INFERIOR #}
-    <div class="bottom-nav glass-effect">
-        <a href="{% url 'perfil' %}" class="action-item">
-            <div class="icon-box-black"><i class="fas fa-university"></i></div>
-            <span>IBAN</span>
-        </a>
-        <a href="{% url 'nivel' %}" class="action-item">
-            <div class="icon-box-black"><i class="fas fa-crown"></i></div>
-            <span>Função</span>
-        </a>
-        <a href="{% url 'roleta' %}" class="action-item">
-            <div class="icon-box-black btn-sorteio-anim"><i class="fas fa-dharmachakra"></i></div>
-            <span style="color: #ffcc00; font-weight: bold;">Sorteio</span>
-        </a>
         <a href="{% url 'equipa' %}" class="action-item">
-            <div class="icon-box-black"><i class="fas fa-users"></i></div>
-            <span>Afiliados</span>
+            <div class="icon-box">
+                <img src="https://cdn-icons-png.flaticon.com/512/1159/1159642.png" class="icon-img-red">
+            </div>
+            <span class="btn-text">Compartilhe<br>convite</span>
         </a>
-        <a href="{% url 'change_password' %}" class="action-item">
-            <div class="icon-box-black"><i class="fas fa-user-shield"></i></div>
-            <span>Senha</span>
+
+        <a href="{% url 'nivel' %}" class="action-item">
+            <div class="icon-box">
+                <img src="https://cdn-icons-png.flaticon.com/512/1534/1534039.png" class="icon-img-red">
+            </div>
+            <span class="btn-text">Junte-se a nós</span>
+        </a>
+
+        <a href="{% url 'perfil' %}" class="action-item full-width-item">
+            <div class="icon-box">
+                <img src="https://cdn-icons-png.flaticon.com/512/2800/2800168.png" class="icon-img-red">
+            </div>
+            <span class="btn-text">Perfil de companhia</span>
         </a>
     </div>
 
+    <a href="{{ whatsapp_link }}" target="_blank" class="floating-support">
+    <div class="support-circle">
+        <img src="https://cdn-icons-png.flaticon.com/512/1250/1250689.png" class="icon-support">
+    </div>
+    <span class="support-label">ATENDIMENTO<br>GERAL</span>
+</a>
+
+<style>
+    .floating-support {
+        position: fixed;
+        bottom: 85px; 
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        z-index: 1000;
+    }
+
+    .support-circle {
+        width: 60px;
+        height: 60px;
+        background-color: #ff0000; /* Cor vermelha para combinar com o seu ícone da imagem */
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        border: 2px solid #ffffff;
+    }
+
+    .icon-support {
+        width: 35px;
+        height: 35px;
+        filter: brightness(0) invert(1); /* Ícone branco */
+    }
+
+    .support-label {
+        /* Fundo removido para não escurecer */
+        color: #333333; /* Cinza escuro legível */
+        font-size: 11px;
+        margin-top: 5px;
+        text-align: center;
+        font-weight: bold;
+        line-height: 1.2;
+        text-shadow: 1px 1px 0px #fff; /* Sombra branca para destacar no fundo claro */
+    }
+</style>
+
+    <nav class="bottom-nav">
+        <a href="{% url 'home' %}" class="nav-tab active">
+            <i class="fas fa-home nav-icon-font"></i>
+            <span>Página inicial</span>
+        </a>
+        <a href="{% url 'tarefa' %}" class="nav-tab">
+            <i class="fas fa-tasks nav-icon-font"></i>
+            <span>Registro de tarefas</span>
+        </a>
+        <a href="{% url 'nivel' %}" class="nav-tab">
+            <i class="fas fa-users nav-icon-font"></i>
+            <span>Junte-se a nós</span>
+        </a>
+        <a href="{% url 'renda' %}" class="nav-tab">
+            <i class="fas fa-chart-line nav-icon-font"></i>
+            <span>renda</span>
+        </a>
+        <a href="{% url 'perfil' %}" class="nav-tab">
+            <i class="fas fa-user nav-icon-font"></i>
+            <span>Meu</span>
+        </a>
+    </nav>
 </div>
 
 <style>
-    :root {
-        --text-white: #ffffff;
-        --glass-bg: rgba(255, 255, 255, 0.08);
-        --blue-dark: #002d5e;
-        --black-pure: #000000;
-        --whatsapp-green: #25d366;
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+    html, body { 
+        overflow-x: hidden; 
+        width: 100%; 
+        margin: 0; padding: 0; 
+        background-color: #f2f2f2;
+        -webkit-text-size-adjust: 100%;
     }
 
-    html, body {
-        margin: 0; padding: 0;
-        background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url("{% static 'background_cad.jpg' %}") no-repeat center center fixed;
-        background-size: cover;
-        font-family: 'Poppins', sans-serif;
-        color: white;
-    }
+    * { box-sizing: border-box; font-family: 'Arial', sans-serif; }
 
-    .forex-dashboard { width: 100%; max-width: 500px; margin: 0 auto; padding-bottom: 110px; }
-
-    /* ESTILO DO CARROSSEL */
-    .carousel-container {
-        margin: 15px 10px;
-        padding: 5px;
-        border-radius: 15px;
-        overflow: hidden;
-        height: 180px; /* Altura ajustável conforme suas imagens */
-        position: relative;
-    }
-
-    .carousel-slide {
+    .app-container {
         width: 100%;
-        height: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        background: #fff;
+        min-height: 100vh;
         position: relative;
+        padding-bottom: 90px;
     }
 
-    .carousel-img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* Garante que a imagem apareça completa sem cortar */
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0;
-        transition: opacity 0.8s ease-in-out;
-        border-radius: 10px;
-    }
+    .main-header { padding: 10px 15px 0 15px; }
+    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .hero-title { font-size: 20px; font-weight: 900; color: #000; line-height: 1.1; margin: 0; }
+    .bbdo-logo-top { width: 70px; height: auto; }
 
-    .carousel-img.active {
-        opacity: 1;
-    }
-
-    /* --- ESTILO DO BOTÃO DE DOWNLOAD --- */
-    .btn-download-app {
-        background: #3b82f6;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 10px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-    }
-    .btn-download-app i { font-size: 12px; }
-
-    /* --- MODAL STYLE --- */
-    .modal-overlay { 
-        position: fixed; inset: 0; background: rgba(0,0,0,0.9); 
-        display: flex; justify-content: center; align-items: center; 
-        z-index: 10000; backdrop-filter: blur(8px); 
-    }
-    .modal-content-custom { 
-        width: 85%; max-width: 320px; max-height: 80vh; 
-        background: rgba(20, 20, 20, 0.95);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 25px; display: flex; flex-direction: column; overflow: hidden;
-    }
-    .animate-in { animation: modalShow 0.4s ease-out; }
-    @keyframes modalShow { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-
-    .modal-header-custom { padding: 20px 15px 10px; text-align: center; }
-    .modal-logo { font-size: 20px; font-weight: 900; letter-spacing: 2px; margin: 0; }
-    .modal-subtitle { font-size: 10px; color: #3b82f6; font-weight: bold; text-transform: uppercase; margin-top: 5px; }
-
-    .modal-body-scroll { padding: 15px 20px; overflow-y: auto; flex: 1; }
-    .modal-body-scroll::-webkit-scrollbar { width: 3px; }
-    .modal-body-scroll::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
-
-    .info-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .info-item i { color: #3b82f6; font-size: 14px; }
-    .info-item p { font-size: 12px; margin: 0; color: #ddd; }
-
-    .modal-divider { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0; }
-    .modal-text-content p { font-size: 12px; line-height: 1.6; color: #bbb; margin-bottom: 12px; text-align: center; }
-
-    .btn-whatsapp-custom { 
-        background: var(--whatsapp-green); color: white; text-decoration: none; 
-        padding: 12px; border-radius: 15px; display: flex; justify-content: center; 
-        align-items: center; gap: 10px; font-size: 11px; font-weight: bold; margin-top: 10px;
-        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
-    }
-    .whatsapp-icon-animate {
-        font-size: 18px;
-        animation: pulse-green 2s infinite;
-    }
-    @keyframes pulse-green {
-        0% { transform: scale(1); text-shadow: 0 0 0 rgba(255,255,255, 0.7); }
-        70% { transform: scale(1.2); text-shadow: 0 0 10px rgba(255,255,255, 0); }
-        100% { transform: scale(1); text-shadow: 0 0 0 rgba(255,255,255, 0); }
-    }
-
-    .btn-close-modal-new { 
-        width: 100%; border: none; background: #fff; color: #000; 
-        padding: 14px; font-size: 12px; font-weight: 800; cursor: pointer;
-    }
-
-    /* --- DASHBOARD STYLE --- */
-    .top-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; }
-    .logo-angowork { font-weight: 900; font-size: 22px; color: #fff; }
-    .btn-sair-topo { background: #ff4444; color: white; padding: 5px 12px; border-radius: 6px; text-decoration: none; font-size: 10px; font-weight: bold; }
-
-    .indicators-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px; padding: 12px; border-radius: 15px; }
-    .indicator-sq { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.05); padding: 12px 2px; border-radius: 10px; }
-    .ind-label { font-size: 7px; color: #aaa; text-transform: uppercase; margin-bottom: 4px; text-align: center; }
-    .ind-value { font-size: 9px; font-weight: bold; color: #fff; }
-
-    .action-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 15px 10px; padding: 15px 5px; border-radius: 15px; }
-    .icon-box-dark { width: 42px; height: 42px; background: var(--blue-dark); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; font-size: 18px; }
-
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); padding: 10px 5px; background: #000 !important; z-index: 999; border-radius: 20px 20px 0 0; }
-    .icon-box-black { width: 40px; height: 40px; background: #111; color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; font-size: 16px; border: 1px solid #222; }
-
-    .btn-sorteio-anim i { color: #ffcc00; animation: spin-slow 3s linear infinite; }
-    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    .action-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: white; }
-    .action-item span { font-size: 8px; font-weight: 500; text-transform: uppercase; }
-
-    .glass-effect { background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
-</style>
-
-<script>
-    // Lógica do Modal
-    function closeModal() {
-        const modal = document.getElementById('welcomeModal');
-        modal.style.transition = 'opacity 0.3s ease';
-        modal.style.opacity = '0';
-        setTimeout(() => { modal.style.display = 'none'; }, 300);
-    }
-
-    // Lógica do Carrossel (5 segundos)
-    let currentImg = 0;
-    const images = document.querySelectorAll('.carousel-img');
+    .banner-wrapper { position: relative; width: 100%; border-radius: 12px; overflow: hidden; }
+    .main-banner-img { width: 100%; display: block; height: auto; }
     
-    function changeImage() {
-        images[currentImg].classList.remove('active');
-        currentImg = (currentImg + 1) % images.length;
-        images[currentImg].classList.add('active');
+    .carousel-dots {
+        position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 5px;
+    }
+    .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 50%; }
+    .dot.active { background: #fff; width: 12px; border-radius: 4px; }
+
+    .news-ticker { display: flex; align-items: center; padding: 8px 15px; background: #fff; }
+    .speaker-icon { color: #00A3E0; font-size: 14px; margin-right: 8px; }
+    .ticker-content { flex: 1; font-size: 12px; color: #00A3E0; font-weight: 700; }
+
+    /* MISSION HALL DESIGN */
+    .mission-section { padding: 5px 15px; }
+    .section-label { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: #333; }
+    .bbdo-card-gold {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 15px 25px; border-radius: 12px; background: #fff;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+    }
+    .card-brand { font-size: 16px; font-weight: 700; color: #333; }
+    .golden-letter { font-size: 48px; font-family: 'Times New Roman', serif; color: #D4AF37; font-weight: bold; line-height: 1; }
+
+    /* GRID SEM QUEBRA E COM ESPAÇO OTIMIZADO */
+    .actions-grid { 
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px 15px;
+    }
+    .action-item {
+        display: flex; align-items: center; padding: 12px 10px;
+        background: #fff; border-radius: 10px; border: 1px solid #eee;
+        text-decoration: none; color: #333;
+    }
+    .full-width-item { grid-column: span 2; }
+
+    .btn-text { 
+        font-size: clamp(10px, 3.2vw, 13px); 
+        font-weight: 700; 
+        margin-left: 8px; 
+        line-height: 1.2;
     }
 
-    if (images.length > 0) {
-        setInterval(changeImage, 5000);
+    .icon-box { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .icon-img-red { width: 24px; filter: invert(16%) sepia(89%) saturate(6054%) hue-rotate(354deg) brightness(94%) contrast(106%); }
+    .icon-img-white { width: 22px; filter: brightness(0) invert(1); }
+    
+    .bg-red { background: #E31A1A; border-radius: 8px; }
+    .border-red { border: 2px solid #E31A1A; border-radius: 8px; }
+
+    /* SUPORTE FLUTUANTE */
+    .floating-support {
+        position: fixed; right: 15px; bottom: 80px; 
+        display: flex; flex-direction: column; align-items: center; z-index: 2000;
+        text-decoration: none;
     }
-</script>
+    .support-circle {
+        background: #E31A1A; width: 55px; height: 55px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        border: 3px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .icon-support { width: 30px; filter: brightness(0) invert(1); }
+    .support-label { font-size: 9px; font-weight: 900; color: #333; text-align: center; margin-top: 4px; line-height: 1; }
+
+    /* NAV INFERIOR */
+    .bottom-nav {
+        position: fixed; bottom: 0; width: 100%; max-width: 500px;
+        background: #fff; display: flex; justify-content: space-around;
+        padding: 12px 0; border-top: 1px solid #eee; z-index: 1000;
+    }
+    .nav-tab { text-decoration: none; color: #aaa; display: flex; flex-direction: column; align-items: center; width: 20%; }
+    .nav-icon-font { font-size: 20px; margin-bottom: 4px; }
+    .nav-tab span { font-size: 9px; font-weight: 700; text-align: center; }
+    .nav-tab.active { color: #E31A1A; }
+</style>
 {% endblock %}

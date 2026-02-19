@@ -1,235 +1,148 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}angowork - Rendimento{% endblock %}
+{% block title %}bbdo - Rendimento Profissional{% endblock %}
 
 {% block content %}
-<div class="renda-dashboard">
+<div class="renda-container">
     
-    {# Barra Superior Minimalista #}
-    <div class="top-bar">
-        <a href="{% url 'home' %}" class="back-btn">
-            <i class="fa-solid fa-chevron-left"></i>
-        </a>
-        <h1 class="page-title">MEU RENDIMENTO</h1>
-        <div style="width: 45px;"></div> 
+    {# Top Bar Minimalista #}
+    <div class="header-minimal">
+        <a href="{% url 'menu' %}" class="btn-back"><i class="fa-solid fa-arrow-left"></i></a>
+        <span class="header-title">RENDIMENTOS</span>
+        <div class="placeholder"></div>
     </div>
 
-    <div class="income-stats-wrapper">
-        
-        <h3 class="section-tag">DADOS DE RENDIMENTOS</h3>
-        
-        {# Primeira Grade: Cards Redondos Expandidos #}
-        <div class="stats-grid">
-            <div class="round-card card-plano">
-                <div class="card-inner">
-                    <i class="fa-solid fa-gem icon-main"></i>
-                    <span class="label">PLANO</span>
-                    <span class="value">
-                        {% if active_level %}
-                            {{ active_level.level.name }}
-                        {% else %}
-                            Plano 0
-                        {% endif %}
-                    </span>
-                </div>
+    {# Card Principal de Saldo (Estilo Carteira) #}
+    <div class="wallet-card">
+        <div class="wallet-info">
+            <span class="wallet-label">Saldo Disponível</span>
+            <div class="balance-row">
+                <span class="currency">KZ</span>
+                <span class="amount" id="balance-kz">{{ user.available_balance|default:"0.00" }}</span>
             </div>
-            
-            <div class="round-card card-saldo">
-                <div class="card-inner">
-                    <i class="fa-solid fa-wallet icon-main"></i>
-                    <span class="label">SALÁRIO</span>
-                    <span class="value">KZ {{ user.available_balance|default:"0.00" }}</span>
-                </div>
-            </div>
-
-            <div class="round-card card-deposito">
-                <div class="card-inner">
-                    <i class="fa-solid fa-circle-arrow-up icon-main"></i>
-                    <span class="label">RECARGA</span>
-                    <span class="value">KZ {{ approved_deposit_total|default:"0" }}</span>
-                </div>
+            <div class="usdt-convert">
+                <span class="usdt-icon">≈</span>
+                <span id="balance-usdt">0.00</span> 
+                <span class="usdt-label">USDT</span>
             </div>
         </div>
+        <div class="wallet-decoration">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+    </div>
 
-        {# Segunda Grade #}
-        <div class="stats-grid mt-20">
-            <div class="round-card card-hoje">
-                <div class="card-inner">
-                    <i class="fa-solid fa-chart-line icon-main"></i>
-                    <span class="label">LUCRO HOJE</span>
-                    <span class="value">KZ {{ daily_income|default:"0.00" }}</span>
-                </div>
-            </div>
-
-            <div class="round-card card-subsidio">
-                <div class="card-inner">
-                    <i class="fa-solid fa-hand-holding-dollar icon-main"></i>
-                    <span class="label">COMISSÃO</span>
-                    <span class="value">KZ {{ user.subsidy_balance|default:"0.00" }}</span>
-                </div>
-            </div>
-
-            <div class="round-card card-total">
-                <div class="card-inner">
-                    <i class="fa-solid fa-piggy-bank icon-main"></i>
-                    <span class="label">SOMATÓRIO</span>
-                    <span class="value">KZ {{ total_income|default:"0.00" }}</span>
-                </div>
-            </div>
+    {# Grade de Indicadores (Cards de Dados) #}
+    <div class="income-grid">
+        <div class="data-card bg-blue">
+            <span class="data-label">Receita de Hoje</span>
+            <span class="data-value">KZ {{ receita_hoje|default:"0.00" }}</span>
         </div>
 
-        {# Espaço para Imagem no Fundo #}
-        <div class="footer-image-container">
-            <img src="{% static 'images/banner_rendimento.png' %}" alt="Total Energies Status" class="footer-banner">
+        <div class="data-card bg-purple">
+            <span class="data-label">Receita de Ontem</span>
+            <span class="data-value">KZ {{ receita_ontem|default:"0.00" }}</span>
         </div>
 
+        <div class="data-card bg-green">
+            <span class="data-label">Receita deste Mês</span>
+            <span class="data-value">KZ {{ receita_mes_atual|default:"0.00" }}</span>
+        </div>
+
+        <div class="data-card bg-orange">
+            <span class="data-label">Mês Anterior</span>
+            <span class="data-value">KZ {{ receita_mes_anterior|default:"0.00" }}</span>
+        </div>
+
+        <div class="data-card bg-dark">
+            <span class="data-label">Subsídios</span>
+            <span class="data-value">KZ {{ user.subsidy_balance|default:"0.00" }}</span>
+        </div>
+
+        <div class="data-card bg-cyan">
+            <span class="data-label">Tarefas de Hoje</span>
+            <span class="data-value">{{ tarefa_hoje_count|default:"0" }}</span>
+        </div>
+
+        <div class="data-card bg-red full-width">
+            <span class="data-label">Total Sacado (Sucesso)</span>
+            <span class="data-value">KZ {{ total_sacado|default:"0.00" }}</span>
+        </div>
+    </div>
+
+    {# Banner de Fundo #}
+    <div class="banner-section">
+        <img src="{% static 'images/banner_rendimento.png' %}" alt="Status" class="img-fluid rounded-4 shadow-sm">
     </div>
 </div>
 
 <style>
     :root {
-        --bg-page: #f4f7fe;
-        --text-dark: #1e272e;
-        --text-muted: #7f8c8d;
-        
-        /* Gradients Profissionais */
-        --grad-plano: linear-gradient(135deg, #6c5ce7, #a29bfe);
-        --grad-saldo: linear-gradient(135deg, #00b894, #55efc4);
-        --grad-deposito: linear-gradient(135deg, #fd79a8, #fab1a0);
-        --grad-hoje: linear-gradient(135deg, #0984e3, #74b9ff);
-        --grad-subsidio: linear-gradient(135deg, #e17055, #ffb142);
-        --grad-total: linear-gradient(135deg, #2d3436, #636e72);
+        --primary-gold: #D4AF37;
+        --bg-body: #F8F9FB;
+        --card-shadow: 0 10px 20px rgba(0,0,0,0.05);
     }
 
-    body {
-        background-color: var(--bg-page) !important;
-        font-family: 'Inter', sans-serif;
-        margin: 0;
-        overflow-x: hidden; /* Evita balanço lateral */
-    }
+    body { background-color: var(--bg-body) !important; font-family: 'Poppins', sans-serif; }
 
-    .renda-dashboard {
-        padding: 15px 10px; /* Reduzi o padding lateral para expandir os cards */
-        width: 100%;
-        box-sizing: border-box;
-    }
+    .renda-container { padding: 20px 16px; max-width: 500px; margin: 0 auto; }
 
-    /* TOP BAR */
-    .top-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    /* Header */
+    .header-minimal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .btn-back { width: 40px; height: 40px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #333; box-shadow: var(--card-shadow); text-decoration: none; }
+    .header-title { font-weight: 700; font-size: 16px; color: #2d3436; }
+    .placeholder { width: 40px; }
+
+    /* Wallet Card */
+    .wallet-card { 
+        background: linear-gradient(135deg, #ff416c, #ff4b2b); /* O Rosa solicitado */
+        border-radius: 24px; padding: 25px; color: white; position: relative;
+        overflow: hidden; box-shadow: 0 15px 30px rgba(255, 65, 108, 0.3);
         margin-bottom: 25px;
-        padding: 0 5px;
     }
+    .wallet-label { font-size: 13px; opacity: 0.9; font-weight: 400; }
+    .balance-row { display: flex; align-items: baseline; gap: 8px; margin-top: 5px; }
+    .currency { font-size: 18px; font-weight: 600; }
+    .amount { font-size: 32px; font-weight: 800; }
+    .usdt-convert { margin-top: 15px; background: rgba(255,255,255,0.15); display: inline-flex; padding: 6px 14px; border-radius: 50px; font-size: 14px; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.2); }
+    .wallet-decoration { position: absolute; right: -20px; bottom: -10px; font-size: 100px; opacity: 0.1; transform: rotate(-15deg); }
 
-    .back-btn {
-        width: 45px;
-        height: 45px;
-        background: #ffffff;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-dark);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        text-decoration: none;
+    /* Grid de Dados */
+    .income-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
+    .data-card { 
+        background: white; padding: 18px 15px; border-radius: 20px; 
+        display: flex; flex-direction: column; gap: 8px;
+        box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.02);
     }
+    .full-width { grid-column: span 2; flex-direction: row; justify-content: space-between; align-items: center; }
+    
+    .data-label { font-size: 11px; color: #636e72; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .data-value { font-size: 15px; color: #2d3436; font-weight: 700; }
 
-    .page-title {
-        font-size: 18px;
-        font-weight: 800;
-        color: var(--text-dark);
-        margin: 0;
-    }
+    /* Cores de borda para destacar os indicadores */
+    .bg-blue { border-left: 4px solid #0984e3; }
+    .bg-purple { border-left: 4px solid #6c5ce7; }
+    .bg-green { border-left: 4px solid #00b894; }
+    .bg-orange { border-left: 4px solid #e17055; }
+    .bg-dark { border-left: 4px solid #2d3436; }
+    .bg-cyan { border-left: 4px solid #00cec9; }
+    .bg-red { border-left: 4px solid #d63031; }
 
-    .section-tag {
-        font-size: 12px;
-        text-transform: uppercase;
-        color: var(--text-muted);
-        letter-spacing: 1.5px;
-        margin-bottom: 20px;
-        text-align: center;
-        font-weight: 600;
-    }
+    .banner-section img { width: 100%; border-radius: 20px; }
 
-    /* GRID & ROUND CARDS EXPANDIDOS */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px; /* Espaço entre cards */
-        width: 100%;
-    }
-
-    .mt-20 { margin-top: 20px; }
-
-    .round-card {
-        aspect-ratio: 1 / 1;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 8px 15px rgba(0,0,0,0.12);
-        position: relative;
-    }
-
-    .card-inner {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        width: 90%;
-    }
-
-    .icon-main {
-        font-size: 22px; /* Ícones maiores */
-        margin-bottom: 5px;
-    }
-
-    .label {
-        font-size: 9px; /* Texto um pouco maior que o anterior */
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        margin-bottom: 2px;
-        opacity: 0.9;
-    }
-
-    .value {
-        font-size: 11px; /* Valor mais legível */
-        font-weight: 800;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-
-    /* Cores */
-    .card-plano { background: var(--grad-plano); }
-    .card-saldo { background: var(--grad-saldo); }
-    .card-deposito { background: var(--grad-deposito); }
-    .card-hoje { background: var(--grad-hoje); }
-    .card-subsidio { background: var(--grad-subsidio); }
-    .card-total { background: var(--grad-total); }
-
-    /* IMAGEM NO FUNDO */
-    .footer-image-container {
-        margin-top: 40px;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding-bottom: 30px;
-    }
-
-    .footer-banner {
-        width: 100%;
-        max-width: 400px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    }
-
-    /* Ajuste para telas minúsculas */
-    @media (max-width: 350px) {
-        .value { font-size: 10px; }
-        .icon-main { font-size: 18px; }
-    }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Taxa de Conversão Exemplo (1 USDT = 1000 KZ)
+        // Você pode buscar essa taxa de uma API ou passar via context do Django
+        const exchangeRate = 1000; 
+        const kzAmount = parseFloat("{{ user.available_balance }}".replace(',', '.'));
+        
+        if (!isNaN(kzAmount)) {
+            const usdtAmount = (kzAmount / exchangeRate).toFixed(2);
+            document.getElementById('balance-usdt').innerText = usdtAmount;
+        }
+    });
+</script>
 {% endblock %}

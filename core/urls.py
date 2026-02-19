@@ -22,11 +22,14 @@ urlpatterns = [
     path('process_task/', views.process_task, name='process_task'),
     path('nivel/', views.nivel, name='nivel'),
     path('equipa/', views.equipa, name='equipa'),
-    path('roleta/', views.roleta, name='roleta'),
-    path('spin-roulette/', views.spin_roulette, name='spin_roulette'),
+    path('sorteio/', views.sorteio_view, name='sorteio'),
+    path('validar-sorteio/', views.validar_codigo_sorteio, name='validar_codigo_sorteio'),
     path('sobre/', views.sobre, name='sobre'),
     path('perfil/', views.perfil, name='perfil'),
     path('renda/', views.renda, name='renda'),
+
+    # No seu core/urls.py
+    path('sorteio/', views.sorteio_view, name='roleta'), # Adicione o name='roleta' aqui
     
    # URLs para alteração de senha CORRIGIDAS
 path('change_password/', MyPasswordChangeView.as_view(), name='change_password'),

@@ -1,146 +1,251 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Minha Equipa | ANGOWORK{% endblock %}
+{% block title %}Estrutura dos Agentes | BBDO{% endblock %}
 
 {% block content %}
-<div class="forex-dashboard">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="equipa-container">
     
     {# TOPO NAVEGAÇÃO #}
     <div class="top-header">
-        <a href="{% url 'menu' %}" class="btn-sair-topo" style="background: rgba(255,255,255,0.1);"><i class="fas fa-chevron-left"></i> VOLTAR</a>
-        <h1 class="logo-angowork">EQUIPA</h1>
-        <div style="width: 80px;"></div>
+        <a href="{% url 'menu' %}" class="btn-back">
+            <i class="fas fa-chevron-left"></i>
+        </a>
+        <h1 class="page-title">ESTRUTURA DOS AGENTES</h1>
+        <div style="width: 32px;"></div> {# Compensação para centralizar título #}
     </div>
 
-{# RESUMO DA EQUIPA #}
-    <div class="indicators-grid glass-effect">
-        <div class="indicator-sq">
-            <span class="ind-label">TOTAL MEMBROS</span>
-            <span class="ind-value">{{ level_a_count }}</span>
+    {# INDICADORES DE CONTABILIDADE #}
+    <div class="stats-grid">
+        <div class="stat-card glass-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ level_a_count }}</span>
+                <span class="stat-label">Membros</span>
+            </div>
         </div>
-        <div class="indicator-sq">
-            <span class="ind-label">INVESTIDORES</span>
-            <span class="ind-value">{{ level_a_investors }}</span>
-        </div>
-        <div class="indicator-sq">
-            <span class="ind-label">MINHA COMISSÃO</span>
-            <span class="ind-value">KZ {{ user.subsidy_balance|default:"0,00" }}</span>
+        <div class="stat-card glass-card">
+            <div class="stat-icon" style="color: #00ff88;"><i class="fas fa-user-check"></i></div>
+            <div class="stat-info">
+                <span class="stat-value">{{ level_a_investors }}</span>
+                <span class="stat-label">Investidores</span>
+            </div>
         </div>
     </div>
 
     {# LINK DE CONVITE #}
-    <div class="action-grid glass-effect" style="display: block; padding: 15px;">
-        <span class="ind-label" style="margin-bottom: 10px; display: block;">Meu Link de Convite</span>
-        <div class="invite-share-box">
+    <div class="invite-section glass-card">
+        <div class="invite-header">
+            <i class="fas fa-link"></i>
+            <span>Link de Convite Individual</span>
+        </div>
+        <div class="invite-box">
             <span id="invite-link-text">{{ invite_link }}</span>
             <button onclick="copyInvite()" id="btn-copy"><i class="fas fa-copy"></i></button>
         </div>
+        <div class="instruction-box">
+            <p><i class="fas fa-info-circle"></i> Copie o seu link de convite e envie às pessoas próximas. Ganhe <strong>15%</strong> por cada convite bem-sucedido dos seus agentes.</p>
+        </div>
     </div>
 
-    {# LISTA DE AFILIADOS #}
-    <div class="list-container" style="margin: 10px;">
-        <h2 class="section-title">MEMBROS NÍVEL 1</h2>
+    {# LISTA DE AGENTES (FILTRADA PARA PAGOS) #}
+    <div class="team-list-section">
+        <h2 class="section-title">MEUS AGENTES ATIVOS</h2>
         
-        <div class="member-table-header">
-            <span>TELEFONE</span>
-            <span>PLANO</span>
-            <span style="text-align: right;">ESTADO</span>
-        </div>
-
-        {# LISTA ÚNICA: Todos os membros aparecem como Verificados #}
-        {% for member in level_a %}
-        <div class="member-row glass-effect border-done">
-            <div class="col-main">
-                <span class="m-phone">{{ member.phone_number }}</span>
-            </div>
-            <div class="col-plan">
-                {% with active_vips=member.userlevel_set.filter.first %}
-                    <span class="p-badge {% if active_vips %}is-vip{% endif %}">
-                        {% if active_vips %}{{ active_vips.level.name }}{% else %}Plano 0{% endif %}
-                    </span>
+        <div class="member-list">
+            {% for member in level_a %}
+                {% with active_level=member.userlevel_set.filter.first %}
+                {% if active_level and active_level.is_active %}
+                    <div class="member-card glass-card">
+                        <div class="member-main-info">
+                            <div class="member-avatar">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="member-details">
+                                <span class="m-id">{{ member.phone_number }}</span>
+                                <span class="m-date">Desde: {{ active_level.purchase_date|date:"d/m/Y" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="member-status-area">
+                            <div class="m-badge">{{ active_level.level.name }}</div>
+                            <div class="task-indicator">
+                                {% if member.task_set.last.completed_at|date:"Y-m-d" == today|date:"Y-m-d" or member.task_set.last.task_day|date:"Y-m-d" == today|date:"Y-m-d" %}
+                                    <span class="task-done"><i class="fas fa-check-circle"></i> Feito</span>
+                                {% else %}
+                                    <span class="task-pending"><i class="fas fa-clock"></i> Pendente</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
                 {% endwith %}
-            </div>
-            <div class="col-status">
-                <span class="status-done" style="color: #2ecc71;"><i class="fas fa-check-circle"></i> Verificado</span>
-            </div>
+            {% empty %}
+                <div class="empty-state glass-card">
+                    <i class="fas fa-user-slash"></i>
+                    <p>Nenhum investidor ativo nível 1.</p>
+                </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="glass-effect" style="padding: 30px; text-align: center; border-radius: 15px;">
-            <p style="font-size: 12px; color: #aaa;">Sua lista de afiliados está vazia.</p>
-        </div>
-        {% endfor %}
     </div>
-
 </div>
 
 <style>
     :root {
-        --text-white: #ffffff;
-        --glass-bg: rgba(255, 255, 255, 0.08);
-        --blue-dark: #002d5e;
-        --black-pure: #000000;
-        --gold: #ffcc00;
-        --success: #2ecc71;
-        --danger: #e74c3c;
+        --primary-lilac: #a29bfe;
+        --deep-lilac: #6c5ce7;
+        --glass: rgba(255, 255, 255, 0.08);
+        --text-light: #f1f2f6;
     }
 
-    html, body {
-        margin: 0; padding: 0;
-        background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url("{% static 'background_cad.jpg' %}") no-repeat center center fixed;
-        background-size: cover;
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body {
+        background: radial-gradient(circle at top left, #2d3436, #000);
+        background-attachment: fixed;
+        color: var(--text-light);
         font-family: 'Poppins', sans-serif;
+        margin: 0;
+        overflow-x: hidden; /* Bloqueia rolagem lateral */
+    }
+
+    .equipa-container {
+        width: 100%;
+        max-width: 450px; /* Otimizado para dispositivos mobile */
+        margin: 0 auto;
+        padding: 15px 12px 100px;
+    }
+
+    /* Topo */
+    .top-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .btn-back {
+        width: 35px;
+        height: 35px;
+        background: var(--glass);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: white;
-    }
-
-    .forex-dashboard { width: 100%; max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
-
-    .glass-effect {
-        background: var(--glass-bg);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        text-decoration: none;
         border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 15px;
+    }
+    .page-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: var(--primary-lilac);
+        margin: 0;
     }
 
-    .border-done {
-        border-left: 3px solid var(--success) !important;
-        background: rgba(46, 204, 113, 0.05);
+    /* Cards */
+    .glass-card {
+        background: rgba(162, 155, 254, 0.04);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(162, 155, 254, 0.15);
+        border-radius: 18px;
     }
 
-    .top-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; }
-    .logo-angowork { font-weight: 900; font-size: 20px; color: #fff; }
-    .btn-sair-topo { color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 10px; font-weight: bold; }
+    /* Indicadores */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .stat-card {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .stat-icon { font-size: 1.2rem; color: var(--primary-lilac); }
+    .stat-value { display: block; font-size: 1.1rem; font-weight: 800; }
+    .stat-label { font-size: 0.65rem; color: #b2bec3; text-transform: uppercase; }
 
-    .indicators-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px; padding: 12px; }
-    .indicator-sq { display: flex; flex-direction: column; align-items: center; text-align: center; background: rgba(255,255,255,0.05); padding: 10px 2px; border-radius: 10px; }
-    .ind-label { font-size: 8px; color: #aaa; text-transform: uppercase; }
-    .ind-value { font-size: 11px; font-weight: bold; color: #fff; margin-top: 4px; }
+    /* Convite */
+    .invite-section { padding: 15px; margin-bottom: 25px; }
+    .invite-header { font-size: 0.8rem; margin-bottom: 10px; color: var(--primary-lilac); }
+    .invite-box {
+        display: flex;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 10px;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        border: 1px dashed rgba(162, 155, 254, 0.3);
+    }
+    #invite-link-text {
+        font-size: 0.75rem;
+        color: #dfe6e9;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80%;
+    }
+    #btn-copy { background: none; border: none; color: var(--primary-lilac); font-size: 1.1rem; }
+    .instruction-box p { font-size: 0.7rem; line-height: 1.4; color: #b2bec3; margin: 0; }
 
-    .invite-share-box { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; }
-    #invite-link-text { font-size: 10px; color: #4facfe; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-    #btn-copy { background: none; border: none; color: var(--gold); font-size: 16px; cursor: pointer; padding-left: 10px; }
+    /* Lista */
+    .section-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #fff;
+        border-left: 3px solid var(--deep-lilac);
+        padding-left: 8px;
+    }
+    .member-card {
+        padding: 12px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .member-main-info { display: flex; align-items: center; gap: 10px; }
+    .member-avatar {
+        width: 38px;
+        height: 38px;
+        background: var(--deep-lilac);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+    .m-id { font-weight: 700; font-size: 0.85rem; display: block; }
+    .m-date { font-size: 0.6rem; color: #636e72; }
 
-    .section-title { font-size: 12px; color: var(--gold); margin: 20px 5px 10px; letter-spacing: 1px; }
-    .member-table-header { display: flex; justify-content: space-between; padding: 0 10px 8px; font-size: 9px; color: #888; font-weight: bold; }
-    
-    .member-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.05); }
-    .col-main { display: flex; flex-direction: column; flex: 1.5; }
-    .m-phone { font-size: 14px; font-weight: 600; color: #eee; }
+    .member-status-area { text-align: right; }
+    .m-badge {
+        font-size: 0.6rem;
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-weight: 800;
+    }
+    .task-indicator { font-size: 0.65rem; margin-top: 4px; font-weight: 600; }
+    .task-done { color: #00ff88; }
+    .task-pending { color: #ff7675; }
 
-    .col-plan { flex: 1; text-align: center; }
-    .p-badge { font-size: 9px; padding: 3px 8px; border-radius: 5px; background: rgba(255,255,255,0.1); color: #ccc; }
-    .is-vip { background: rgba(255, 204, 0, 0.2); color: var(--gold); border: 1px solid rgba(255,204,0,0.3); }
-
-    .col-status { flex: 1; text-align: right; }
-    .status-done { color: var(--success); font-size: 11px; font-weight: bold; }
+    .empty-state { text-align: center; padding: 30px; color: #636e72; font-size: 0.8rem; }
 </style>
 
 <script>
     function copyInvite() {
         const text = document.getElementById('invite-link-text').innerText;
+        const btn = document.getElementById('btn-copy');
         navigator.clipboard.writeText(text).then(() => {
-            const btn = document.getElementById('btn-copy');
             btn.innerHTML = '<i class="fas fa-check"></i>';
             setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
         });

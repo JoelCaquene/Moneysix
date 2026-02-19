@@ -115,13 +115,38 @@ class Task(models.Model):
     # Útil para validar o dia da semana e histórico
     task_day = models.DateField(default=timezone.now)
 
-# --- ROLETA ---
+# --- SISTEMA DE SORTEIO POR CÓDIGO ---
+
+class PromoCode(models.Model):
+    code = models.CharField(max_length=50, unique=True, verbose_name="Código do Cupom")
+    value = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Valor do Prêmio (KZ)")
+    is_active = models.BooleanField(default=True, verbose_name="Ativo?")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.code} - {self.value} KZ"
+
+    class Meta:
+        verbose_name = "Código de Sorteio"
+        verbose_name_plural = "Códigos de Sorteio"
+
+class PromoCodeUsage(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="Usuário")
+    promo_code = models.ForeignKey(PromoCode, on_delete=models.CASCADE, verbose_name="Código Usado")
+    prize_won = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Prêmio Ganho")
+    used_at = models.DateTimeField(auto_now_add=True, verbose_name="Data de Uso")
+
+    def __str__(self):
+        return f"{self.user.phone_number} usou {self.promo_code.code}"
+
+    class Meta:
+        verbose_name = "Histórico de Sorteio"
+        verbose_name_plural = "Histórico de Sorteios"
+
+# Se quiser manter a tabela Roulette apenas para não dar erro em outras partes do código:
 class Roulette(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     prize = models.DecimalField(max_digits=12, decimal_places=2)
     spin_date = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=True)
-
-class RouletteSettings(models.Model):
-    prizes = models.CharField(max_length=255, help_text="Ex: 0,500,1000")
     
