@@ -1,6 +1,6 @@
 """
 Django settings for bbdo project.
-Configurado para Testagem Local e Produção no Render.com.
+Configurado para Testagem Local e Produção no Heroku.
 """
 
 from pathlib import Path
@@ -21,22 +21,21 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-produca
 # CONFIGURAÇÃO DOS HOSTS PERMITIDOS E CSRF
 # ======================================================================
 
-# No Render, o host costuma ser 'seu-app.onrender.com'
+# Permite localhost por padrão
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    if RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+# Adiciona o host do Heroku dinamicamente
+HEROKU_APP_NAME = os.environ.get('HEROKU_APP_NAME')
+if HEROKU_APP_NAME:
+    ALLOWED_HOSTS.append(f"{HEROKU_APP_NAME}.herokuapp.com")
 
-# ADICIONADO: Seus domínios personalizados para produção (Corrigido para .pro)
+# Seus domínios personalizados
 ALLOWED_HOSTS.extend([
     'bbdo.pro',
     'www.bbdo.pro',
-    'bbdo-c31p.onrender.com'
 ])
 
-# FORÇAR REDIRECIONAMENTO PARA WWW (Isso torna o www o principal)
+# FORÇAR REDIRECIONAMENTO PARA WWW (Em produção)
 if not DEBUG:
     PREPEND_WWW = True
 
@@ -93,7 +92,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bbdo.wsgi.application'
 
 # ======================================================================
-# DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO)
+# DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO NO HEROKU)
 # ======================================================================
 DATABASES = {
     'default': dj_database_url.config(
@@ -117,7 +116,6 @@ LANGUAGES = [
     ('fr', _('Français')),
 ]
 
-# Caminho onde as pastas de tradução (locale) ficarão
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
@@ -129,7 +127,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# Armazenamento otimizado para produção
+# Armazenamento otimizado para produção (WhiteNoise)
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
