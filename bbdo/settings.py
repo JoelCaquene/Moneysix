@@ -1,6 +1,6 @@
 """
 Django settings for bbdo project.
-Configurado para Testagem Local e Produção no Heroku.
+Configurado para Produção Direta no Heroku (Sem domínios externos).
 """
 
 from pathlib import Path
@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 # Caminho base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SEGURANÇA: DEBUG deve ser False em produção
+# SEGURANÇA: DEBUG controlado via variável de ambiente no Heroku
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-producao')
@@ -21,26 +21,15 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-produca
 # CONFIGURAÇÃO DOS HOSTS PERMITIDOS E CSRF
 # ======================================================================
 
-# Permite localhost por padrão
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+# Aceita o link do Heroku e localhost
+ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1']
 
-# Adiciona o host do Heroku dinamicamente
-HEROKU_APP_NAME = os.environ.get('HEROKU_APP_NAME')
-if HEROKU_APP_NAME:
-    ALLOWED_HOSTS.append(f"{HEROKU_APP_NAME}.herokuapp.com")
-
-# Seus domínios personalizados
-ALLOWED_HOSTS.extend([
-    'bbdo.pro',
-    'www.bbdo.pro',
-])
-
-# FORÇAR REDIRECIONAMENTO PARA WWW (Em produção)
-if not DEBUG:
-    PREPEND_WWW = True
-
-# Configuração de origens confiáveis para CSRF
-CSRF_TRUSTED_ORIGINS = [f"https://{host.strip()}" for host in ALLOWED_HOSTS if host.strip()]
+# Configuração de origens confiáveis para CSRF (Importante para o Admin funcionar)
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.herokuapp.com',
+    'http://localhost',
+    'http://127.0.0.1'
+]
 
 # ======================================================================
 # APPS E MIDDLEWARE
@@ -52,9 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',  # WhiteNoise antes do staticfiles
+    'whitenoise.runserver_nostatic', 
     'django.contrib.staticfiles',
-    
     'core',
 ]
 
@@ -92,7 +80,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bbdo.wsgi.application'
 
 # ======================================================================
-# DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO NO HEROKU)
+# DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO)
 # ======================================================================
 DATABASES = {
     'default': dj_database_url.config(
@@ -127,15 +115,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-# Armazenamento otimizado para produção (WhiteNoise)
-if not DEBUG:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Armazenamento otimizado para WhiteNoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # ======================================================================
-# SEGURANÇA EXTRA (ATIVADA APENAS EM PRODUÇÃO)
+# SEGURANÇA EXTRA (ESTÁVEL PARA HEROKU)
 # ======================================================================
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
