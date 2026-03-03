@@ -1,6 +1,6 @@
 """
 Django settings for bbdo project.
-Configurado para Produção Direta no Heroku (Sem domínios externos).
+Configurado para Produção no Heroku com Domínio Personalizado: bbdov2.pro
 """
 
 from pathlib import Path
@@ -21,14 +21,24 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-produca
 # CONFIGURAÇÃO DOS HOSTS PERMITIDOS E CSRF
 # ======================================================================
 
-# Aceita o link do Heroku e localhost
-ALLOWED_HOSTS = ['*', 'localhost', '127.0.0.1']
+# Aceita o novo domínio, o link do Heroku e localhost
+ALLOWED_HOSTS = [
+    'bbdov2.pro',
+    'www.bbdov2.pro',
+    'bbdo-v2-5934649d5ee7.herokuapp.com',
+    'localhost',
+    '127.0.0.1'
+]
+
+# FORÇAR REDIRECIONAMENTO PARA WWW (Se não estiver em DEBUG)
+if not DEBUG:
+    PREPEND_WWW = True
 
 # Configuração de origens confiáveis para CSRF (Importante para o Admin funcionar)
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.herokuapp.com',
-    'http://localhost',
-    'http://127.0.0.1'
+    'https://bbdov2.pro',
+    'https://www.bbdov2.pro',
+    'https://bbdo-v2-5934649d5ee7.herokuapp.com'
 ]
 
 # ======================================================================
