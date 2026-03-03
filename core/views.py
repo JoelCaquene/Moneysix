@@ -331,21 +331,21 @@ def process_task(request):
         # Comissões de rede (Apenas para planos pagos)
         p1 = user.invited_by
         if active_user_level and p1: 
-            subsidy_a = task_earnings * Decimal('0.20')
+            subsidy_a = task_earnings * Decimal('0.10')
             p1.available_balance += subsidy_a
             p1.subsidy_balance += subsidy_a
             p1.save()
 
             p2 = p1.invited_by
             if p2:
-                subsidy_b = task_earnings * Decimal('0.03')
+                subsidy_b = task_earnings * Decimal('0.01')
                 p2.available_balance += subsidy_b
                 p2.subsidy_balance += subsidy_b
                 p2.save()
 
                 p3 = p2.invited_by
                 if p3:
-                    subsidy_c = task_earnings * Decimal('0.02')
+                    subsidy_c = task_earnings * Decimal('0.01')
                     p3.available_balance += subsidy_c
                     p3.subsidy_balance += subsidy_c
                     p3.save()
