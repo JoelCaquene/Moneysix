@@ -320,7 +320,7 @@ def process_task(request):
                     'message': 'Seu período de estagiário terminou. Adquira um plano pago para continuar.'
                 })
             
-            task_earnings = Decimal('450.00') # Ganho de estagiário
+            task_earnings = Decimal('300.00') # Ganho de estagiário
             user.free_days_count += 1
 
         # Salva a tarefa e atualiza saldo
