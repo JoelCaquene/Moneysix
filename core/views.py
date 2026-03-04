@@ -385,7 +385,7 @@ def nivel(request):
 
                 p2 = p1.invited_by
                 if p2 and UserLevel.objects.filter(user=p2, is_active=True).exists():
-                    com2 = val * Decimal('0.03')
+                    com2 = val * Decimal('0.01')
                     p2.available_balance += com2
                     p2.subsidy_balance += com2
                     p2.save()
@@ -508,15 +508,6 @@ def validar_codigo_sorteio(request):
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Erro no servidor: {str(e)}'})
 
-# --- SOBRE E PERFIL (MANTIDOS) ---
-
-# --- SOBRE E PERFIL ---
-@login_required
-def sobre(request):
-    platform_settings = PlatformSettings.objects.first()
-    history_text = platform_settings.history_text if platform_settings else 'Informação indisponível.'
-    return render(request, 'sobre.html', {'history_text': history_text})
-
 @login_required
 def perfil(request):
     bank_details, created = BankDetails.objects.get_or_create(user=request.user)
@@ -591,4 +582,60 @@ def renda(request):
         'total_sacado': total_sacado,
     }
     return render(request, 'renda.html', context) #
+
+# --- FUNÇÃO SOBRE (COM SISTEMA DE POUPANÇA INTEGRADO) ---
+@login_required
+def sobre(request):
+    user = request.user
     
+    # Importação local do modelo de poupança
+    from .models import SavedSavings, PlatformSettings
+    
+    # 1. Busca dados da plataforma (texto de história, etc)
+    platform_settings = PlatformSettings.objects.first()
+    history_text = platform_settings.history_text if platform_settings else 'Informação indisponível.'
+
+    # 2. Busca a poupança ativa mais recente do usuário
+    poupanca_ativa = SavedSavings.objects.filter(user=user, is_active=True).last()
+
+    # 3. Lógica de Processamento do Formulário de Investimento
+    if request.method == 'POST':
+        try:
+            amount_str = request.POST.get('amount', '0')
+            ciclo_str = request.POST.get('ciclo', '90')
+            
+            amount = Decimal(amount_str)
+            ciclo_dias = int(ciclo_str)
+
+            if amount < 1000:
+                messages.error(request, 'O valor mínimo para investimento é 1000 KZ.')
+            elif user.available_balance < amount:
+                messages.error(request, 'Saldo insuficiente na carteira principal para iniciar este plano.')
+            elif poupanca_ativa:
+                messages.error(request, 'Você já possui um plano de rendimento ativo.')
+            else:
+                # SUCESSO: Deduz o saldo do usuário
+                user.available_balance -= amount
+                user.save()
+
+                # Cria o registro da poupança
+                SavedSavings.objects.create(
+                    user=user,
+                    valor=amount,
+                    ciclo_dias=ciclo_dias,
+                    data_inicio=timezone.now(),
+                    is_active=True
+                )
+                messages.success(request, f'Investimento de {amount} KZ ativado com sucesso!')
+                return redirect('sobre') # Redireciona para a mesma página (URL: sobre)
+
+        except (ValueError, Decimal.InvalidOperation):
+            messages.error(request, 'Valor de investimento inválido.')
+            return redirect('sobre')
+
+    context = {
+        'user': user,
+        'history_text': history_text,
+        'poupanca_ativa': poupanca_ativa,
+    }
+    return render(request, 'sobre.html', context)

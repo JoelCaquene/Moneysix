@@ -1,152 +1,243 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Centro de Tutoria - bbdo{% endblock %}
+{% block title %}Invest BBDO - Painel{% endblock %}
 
 {% block content %}
-<div class="tutoria-master-container">
-    
-    {# HEADER MINIMALISTA #}
-    <div class="tutoria-header-compact">
-        <h1>TUTORIA</h1>
-    </div>
-
-    <div class="tutoria-body">
-        
-        {# 1. SEÇÃO DE VÍDEOS DE INSTRUÇÃO #}
-        <div class="tutoria-section">
-            <h2 class="section-title"><i class="fas fa-play-circle"></i> Instruções em Vídeo</h2>
-            
-            <div class="video-grid">
-                <div class="video-card tutorial-bg-alt">
-                    <div class="video-wrapper">
-                        <video controls poster="{% static 'images/thumb_deposito.jpg' %}">
-                            <source src="{% static 'videos/tutorial_deposito.mp4' %}" type="video/mp4">
-                            Seu navegador não suporta vídeos.
-                        </video>
-                    </div>
-                    <div class="video-info">
-                        <h3>Depósito e Adquirir Função</h3>
-                        <p>Aprenda o passo a passo para garantir sua vaga na empresa.</p>
-                    </div>
-                </div>
-
-                <div class="video-card tutorial-bg-alt">
-                    <div class="video-wrapper">
-                        <video controls poster="{% static 'images/thumb_trabalho.jpg' %}">
-                            <source src="{% static 'videos/tutorial_trabalho.mp4' %}" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="video-info">
-                        <h3>Execução de Trabalho Diário</h3>
-                        <p>Como realizar suas tarefas de marketing e garantir seu ganho.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {# 2. SEÇÃO DE CARDS DE IMAGENS - APENAS EQUIPA E INVESTIMENTO #}
-        <div class="tutoria-section">
-            <h2 class="section-title"><i class="fas fa-images"></i> Guias e Tabelas</h2>
-            
-            <div class="image-stack">
-                <div class="img-tutorial-card tutorial-bg-alt">
-                    <div class="img-badge">EQUIPA</div>
-                    <img src="{% static 'images/salario_equipe.jpg' %}" alt="Salário Semanal">
-                    <div class="img-caption">Tabela de Salários por Formação de Equipa</div>
-                </div>
-
-                <div class="img-tutorial-card tutorial-bg-alt">
-                    <div class="img-badge">RENDIMENTOS</div>
-                    <img src="{% static 'images/tabela_rendimento.jpg' %}" alt="Tabela de Investimento">
-                    <div class="img-caption">Tabela Oficial de Cargos e Lucros</div>
-                </div>
-            </div>
-        </div>
-
-        {# 3. SEÇÃO HISTÓRICO E FUNCIONAMENTO #}
-        <div class="tutoria-section">
-            <h2 class="section-title"><i class="fas fa-landmark"></i> Sobre a Instituição</h2>
-            
-            <div class="history-card tutorial-bg-alt">
-                <div class="history-item">
-                    <div class="history-icon"><i class="fas fa-history"></i></div>
-                    <div class="history-text">
-                        <h3>A Nossa Trajetória</h3>
-                        <p>A bbdo é conhecida no mercado angolano por atuar na gestão de capital humano e prestação de serviços especializados...</p>
-                    </div>
-                </div>
-
-                <div class="history-item">
-                    <div class="history-icon"><i class="fas fa-briefcase"></i></div>
-                    <div class="history-text">
-                        <h3>Como são feitos os Trabalhos?</h3>
-                        <p>Adquirimos novos serviços de Marketing Digital. Empresas ou particulares pagam para expandir suas marcas na nossa plataforma...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
     :root {
-        --primary: #001f3f;
-        --accent: #2563eb;
-        --bg-light: #f8fafc;
-        --card-bg-custom: #eef2f6; 
+        --glass: rgba(15, 23, 42, 0.8);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --accent: #f1c40f; 
+        --success: #00ff88;
+        --blue-active: #2563eb;
+        --bg-deep: #050a18;
     }
 
-    html, body {
-        overflow-x: hidden;
-        width: 100%;
+    body {
+        background: var(--bg-deep) !important;
+        color: #f8fafc;
+        font-family: 'Poppins', sans-serif;
         margin: 0; padding: 0;
-        background-color: var(--bg-light);
-        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    .tutoria-header-compact {
-        background: var(--primary);
-        padding: 20px;
+    /* Header */
+    .p_header {
+        display: flex; align-items: center; padding: 18px 20px;
+        background: rgba(5, 10, 24, 0.95);
+        position: sticky; top: 0; z-index: 100;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .p_back { color: white; font-size: 1.3rem; text-decoration: none; margin-right: 15px; }
+    .p_header h1 { font-size: 1.1rem; margin: 0; font-weight: 800; color: var(--accent); letter-spacing: 0.5px; }
+
+    .container { 
+        padding: 15px; 
+        max-width: 420px; 
+        margin: 0 auto; 
+        box-sizing: border-box; 
+    }
+
+    /* Card de Monitoramento (O CICLO QUE TU QUERES) */
+    .p_monitor_box {
+        background: rgba(20, 30, 60, 0.6);
+        border: 1px solid var(--glass-border);
+        border-radius: 28px;
+        padding: 25px;
+        margin-bottom: 25px;
         text-align: center;
-        color: white;
-        border-radius: 0 0 20px 20px;
-    }
-    .tutoria-header-compact h1 { font-size: 18px; margin: 0; letter-spacing: 2px; font-weight: 800; }
-
-    .tutoria-body { padding: 20px 15px 100px; }
-    .tutoria-section { margin-bottom: 35px; }
-    
-    .tutorial-bg-alt { background-color: var(--card-bg-custom) !important; color: #000000 !important; }
-    .tutorial-bg-alt h3, .tutorial-bg-alt p, .tutorial-bg-alt div { color: #000000 !important; }
-
-    .section-title {
-        font-size: 16px; font-weight: 700; color: var(--primary);
-        display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
     }
 
-    .video-grid { display: flex; flex-direction: column; gap: 20px; }
-    .video-card { border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .video-wrapper video { width: 100%; display: block; background: #000; }
-    .video-info { padding: 15px; }
-    .video-info h3 { font-size: 15px; margin: 0 0 5px; font-weight: 700; }
-    .video-info p { font-size: 12.5px; margin: 0; }
-
-    .image-stack { display: flex; flex-direction: column; gap: 15px; }
-    .img-tutorial-card { position: relative; padding: 10px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .img-tutorial-card img { width: 100%; border-radius: 10px; }
-    .img-badge { position: absolute; top: 20px; left: 20px; background: var(--accent); color: white !important; font-size: 10px; padding: 4px 10px; border-radius: 20px; }
-    .img-caption { text-align: center; font-size: 13px; font-weight: 700; padding-top: 10px; }
-
-    .history-card { border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .history-item { display: flex; gap: 15px; margin-bottom: 25px; }
-    .history-icon { min-width: 40px; height: 40px; background: rgba(0,0,0,0.05); color: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-
-    @media (min-width: 768px) {
-        .tutoria-body { max-width: 800px; margin: 0 auto; }
-        .video-grid { flex-direction: row; }
-        .video-card { flex: 1; }
+    .p_circle_area {
+        display: flex; align-items: center; justify-content: center; gap: 20px;
+        margin: 15px 0;
     }
+
+    .p_svg { width: 100px; height: 100px; transform: rotate(-90deg); }
+    .p_bg_circle { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 8; }
+    .p_bar_circle { 
+        fill: none; stroke: var(--success); stroke-width: 8; 
+        stroke-dasharray: 251.2; stroke-dashoffset: 251.2; 
+        stroke-linecap: round; transition: stroke-dashoffset 1s linear;
+    }
+
+    .p_profit_display { text-align: left; }
+    .p_profit_label { font-size: 0.7rem; opacity: 0.6; display: block; }
+    .p_profit_amt { font-size: 1.8rem; font-weight: 800; color: var(--success); line-height: 1; }
+
+    .p_dates {
+        display: flex; justify-content: space-between;
+        margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);
+        font-size: 0.75rem; color: rgba(255,255,255,0.4);
+    }
+    .p_dates strong { color: white; display: block; font-size: 0.85rem; margin-top: 4px; }
+
+    /* Card de Input */
+    .p_form_card {
+        background: var(--glass);
+        border-radius: 24px;
+        padding: 22px;
+        border: 1px solid var(--glass-border);
+    }
+
+    .p_tabs {
+        display: flex; background: rgba(0,0,0,0.3);
+        border-radius: 12px; padding: 4px; margin-bottom: 20px;
+    }
+    .p_tab {
+        flex: 1; text-align: center; padding: 10px; cursor: pointer;
+        border-radius: 10px; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4);
+    }
+    .p_tab.active { background: var(--blue-active); color: white; }
+
+    .p_input_group { margin-bottom: 20px; }
+    .p_input_box {
+        background: rgba(0,0,0,0.3); border-radius: 15px; 
+        padding: 15px; border: 1px solid var(--glass-border);
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .p_input_box input {
+        background: transparent; border: none; color: white;
+        font-size: 1.3rem; font-weight: 800; outline: none; width: 70%;
+    }
+
+    .p_btn {
+        width: 100%; padding: 18px; border-radius: 16px; border: none;
+        background: #eab308; color: #000; font-weight: 800;
+        font-size: 0.95rem; text-transform: uppercase; cursor: pointer;
+    }
+
 </style>
+
+<div class="p_header">
+    <a href="{% url 'menu' %}" class="p_back"><i class="fas fa-arrow-left"></i></a>
+    <h1>INVEST BBDO</h1>
+</div>
+
+<div class="container">
+    
+    <span class="p_profit_label" style="color:var(--accent); margin-left:10px; font-weight:700;">CRESCIMENTO EM TEMPO REAL</span>
+    <div class="p_monitor_box">
+        <div class="p_circle_area">
+            <div style="position: relative;">
+                <svg class="p_svg">
+                    <circle class="p_bg_circle" cx="50" cy="50" r="40"></circle>
+                    <circle class="p_bar_circle" id="circle_prog" cx="50" cy="50" r="40"></circle>
+                </svg>
+                <div style="position: absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+                    <strong id="perc_txt" style="font-size: 0.9rem;">0.0%</strong>
+                </div>
+            </div>
+            <div class="p_profit_display">
+                <span class="p_profit_label">Lucro Acumulado</span>
+                <span class="p_profit_amt" id="profit_txt">+0.00</span>
+                <span style="font-size: 0.7rem; font-weight: 700; opacity: 0.4; display: block;">KZ</span>
+            </div>
+        </div>
+
+        <div class="p_dates">
+            <div style="text-align: left;">Início:<strong id="start_date">--/--/--</strong></div>
+            <div style="text-align: right;">Liberação:<strong id="end_date">--/--/--</strong></div>
+        </div>
+    </div>
+
+    <div class="p_form_card">
+        <span class="p_profit_label" style="color:var(--accent); margin-bottom:10px;">PLANO DE RENDIMENTO</span>
+        <div class="p_tabs">
+            <div class="p_tab active" onclick="setCycle(this, 90)">90 DIAS</div>
+            <div class="p_tab" onclick="setCycle(this, 180)">180 DIAS</div>
+            <div class="p_tab" onclick="setCycle(this, 365)">1 ANO</div>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="p_input_group">
+                <span class="p_profit_label">CAPITAL INICIAL</span>
+                <div class="p_input_box">
+                    <input type="number" id="inp_amt" name="amount" placeholder="Min. 1000" oninput="recalc()">
+                    <span style="font-weight: 800; color: var(--accent);">KZ</span>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span class="p_profit_label">Rentabilidade</span>
+                    <span style="color: var(--success); font-weight: 700;">3.0% / Dia</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span class="p_profit_label">Retorno Final</span>
+                    <span id="res_total" style="color: var(--success); font-weight: 700;">0.00 KZ</span>
+                </div>
+            </div>
+
+            <input type="hidden" id="ciclo_val" name="ciclo" value="90">
+            <button type="submit" class="p_btn">CONFIRMAR INVESTIMENTO</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let days = 90;
+    
+    function setCycle(el, d) {
+        document.querySelectorAll('.p_tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        days = d;
+        document.getElementById('ciclo_val').value = d;
+        recalc();
+    }
+
+    function recalc() {
+        const amt = parseFloat(document.getElementById('inp_amt').value) || 0;
+        const total = amt + (amt * 0.03 * days);
+        document.getElementById('res_total').innerText = total.toFixed(2) + " KZ";
+        
+        // Atualiza a data de resgate no formulário
+        let d = new Date();
+        d.setDate(d.getDate() + days);
+        // Opcional: mostrar essa data em algum lugar do form se quiseres
+    }
+
+    // LÓGICA DE EXECUÇÃO REAL (SÓ SE O DJANGO ENVIAR DADOS)
+    {% if poupanca_ativa %}
+    const data = {
+        val: parseFloat("{{ poupanca_ativa.valor }}"),
+        days: parseInt("{{ poupanca_ativa.ciclo_dias }}"),
+        start: new Date("{{ poupanca_ativa.data_inicio|date:'Y-m-d H:i:s' }}")
+    };
+
+    function runMonitor() {
+        const end = new Date(data.start);
+        end.setDate(end.getDate() + data.days);
+        
+        document.getElementById('start_date').innerText = data.start.toLocaleDateString('pt-PT');
+        document.getElementById('end_date').innerText = end.toLocaleDateString('pt-PT');
+
+        const pPerSec = (data.val * 0.03) / 86400;
+
+        setInterval(() => {
+            const now = new Date();
+            const elapsed = (now - data.start) / 1000;
+            const totalSecs = (end - data.start) / 1000;
+
+            if(elapsed > 0) {
+                const profit = pPerSec * elapsed;
+                document.getElementById('profit_txt').innerText = "+" + profit.toFixed(2);
+                
+                const perc = Math.min((elapsed / totalSecs) * 100, 100);
+                document.getElementById('perc_txt').innerText = perc.toFixed(1) + "%";
+                document.getElementById('circle_prog').style.strokeDashoffset = 251.2 - (251.2 * perc / 100);
+            }
+        }, 1000);
+    }
+    runMonitor();
+    {% endif %}
+
+    window.onload = recalc;
+</script>
 {% endblock %}

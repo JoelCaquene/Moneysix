@@ -4,7 +4,7 @@ from django.db.models import Sum
 from .models import (
     CustomUser, PlatformSettings, Level, BankDetails, Deposit, 
     Withdrawal, Task, Roulette, UserLevel, PlatformBankDetails,
-    PromoCode, PromoCodeUsage
+    PromoCode, PromoCodeUsage, SavedSavings
 )
 
 # --- CONFIGURAÇÕES DO USUÁRIO ---
@@ -176,4 +176,33 @@ class RouletteAdmin(admin.ModelAdmin):
 @admin.register(BankDetails)
 class BankDetailsAdmin(admin.ModelAdmin):
     list_display = ('user', 'bank_name', 'account_holder_name', 'IBAN')
+
+# --- CONFIGURAÇÃO DA POUPANÇA PROGRAMADA ---
+
+@admin.register(SavedSavings)
+class SavedSavingsAdmin(admin.ModelAdmin):
+    # Exibe quem ativou, quanto, o ciclo e as datas no resumo
+    list_display = ('user', 'valor', 'ciclo_dias', 'data_inicio', 'data_fim_prevista', 'lucro_final_estimado', 'is_active', 'is_redeemed')
     
+    # Filtros laterais para facilitar a gestão
+    list_filter = ('is_active', 'is_redeemed', 'ciclo_dias', 'data_inicio')
+    
+    # Campo de busca pelo número de telefone do cliente
+    search_fields = ('user__phone_number',)
+    
+    # Define apenas leitura para campos que não devem ser alterados manualmente para não quebrar a lógica
+    readonly_fields = ('data_inicio', 'data_fim_prevista', 'lucro_final_estimado')
+
+    def data_fim_prevista(self, obj):
+        """Mostra no painel a data exata em que o ciclo termina"""
+        return obj.data_liberacao
+    data_fim_prevista.short_description = 'Data de Liberação'
+
+    def lucro_final_estimado(self, obj):
+        """Mostra quanto o cliente vai receber no final (Capital + 3% ao dia)"""
+        valor_final = obj.lucro_total_previsto
+        return mark_safe(f'<span style="color: #2e7d32; font-weight: bold;">{valor_final:,.2f} KZ</span>')
+    lucro_final_estimado.short_description = 'Retorno Final (3%/dia)'
+
+    # Permite ativar/desativar rapidamente na lista
+    list_editable = ('is_active', 'is_redeemed')

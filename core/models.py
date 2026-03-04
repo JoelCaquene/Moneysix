@@ -149,4 +149,41 @@ class Roulette(models.Model):
     prize = models.DecimalField(max_digits=12, decimal_places=2)
     spin_date = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=True)
-    
+
+# --- SISTEMA DE POUPANÇA PROGRAMADA (INVEST BBDO) ---
+
+from decimal import Decimal # Garanta que isso está no topo do seu arquivo
+
+class SavedSavings(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="Utilizador")
+    valor = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Capital Investido")
+    ciclo_dias = models.IntegerField(verbose_name="Duração do Ciclo (Dias)")
+    data_inicio = models.DateTimeField(default=timezone.now, verbose_name="Data de Início")
+    is_active = models.BooleanField(default=True, verbose_name="Poupança Ativa?")
+    is_redeemed = models.BooleanField(default=False, verbose_name="Já Resgatado?")
+
+    def __str__(self):
+        status = "Ativa" if self.is_active else "Finalizada"
+        return f"Poupança {self.user.phone_number} - {self.valor} KZ ({status})"
+
+    class Meta:
+        verbose_name = "Poupança Programada"
+        verbose_name_plural = "Poupanças Programadas"
+        ordering = ['-data_inicio']
+
+    @property
+    def data_liberacao(self):
+        """Calcula a data exata em que o valor fica disponível para saque"""
+        if self.data_inicio and self.ciclo_dias is not None:
+            return self.data_inicio + timezone.timedelta(days=int(self.ciclo_dias))
+        return None
+
+    @property
+    def lucro_total_previsto(self):
+        """Calcula o retorno total (Capital + 3% ao dia)"""
+        if self.valor and self.ciclo_dias:
+            taxa_diaria = Decimal('0.03')
+            lucro = self.valor * taxa_diaria * self.ciclo_dias
+            return self.valor + lucro
+        return Decimal('0.00')
+        
