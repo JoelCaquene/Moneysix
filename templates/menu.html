@@ -83,7 +83,7 @@
     <div class="support-circle">
         <img src="https://cdn-icons-png.flaticon.com/512/1250/1250689.png" class="icon-support">
     </div>
-    <span class="support-label">ATENDIMENTO<br>GERAL</span>
+    <span class="support-label">APOIO AO<br>CLIENTE</span>
 </a>
 
 <style>
@@ -258,4 +258,130 @@
     .nav-tab span { font-size: 9px; font-weight: 700; text-align: center; }
     .nav-tab.active { color: #E31A1A; }
 </style>
+
+<div id="welcomePopup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header-img">
+            <img src="{% static 'images/welcome_banner.png' %}" alt="Bem-vindo" id="mainPopupImg">
+        </div>
+        
+        <div class="popup-body">
+            <h3>Bem-vindo à BBDO</h3>
+            <p>Junte-se às nossas comunidades oficiais para suporte e novidades.</p>
+            
+            <div class="popup-links">
+                <a href="https://chat.whatsapp.com/L9nts7KgjtnHvvQJcIaHBp?mode=gi_t" target="_blank" class="social-btn whatsapp">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Grupo
+                </a>
+                <a href="https://t.me/+JaeN8OduUnQ1OWQ8" target="_blank" class="social-btn telegram">
+                    <i class="fab fa-telegram-plane"></i> Telegram Canal
+                </a>
+            </div>
+            
+            <button onclick="closePopup()" class="btn-close-popup">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Fundo escurecido */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s ease;
+    }
+
+    /* Efeito Vidro (Glassmorphism) */
+    .popup-content {
+        width: 85%;
+        max-width: 320px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transform: scale(0.8);
+        transition: all 0.4s ease;
+        text-align: center;
+    }
+
+    /* Quando o pop-up abre */
+    .popup-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    .popup-overlay.active .popup-content {
+        transform: scale(1);
+    }
+
+    /* Imagem do Topo */
+    .popup-header-img img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .popup-body { padding: 20px; color: #fff; }
+
+    .popup-body h3 { margin: 0 0 10px; font-size: 18px; font-weight: 800; }
+    .popup-body p { font-size: 13px; margin-bottom: 20px; opacity: 0.9; }
+
+    /* Botões Sociais */
+    .popup-links { display: flex; flex-direction: column; gap: 10px; }
+
+    .social-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #fff;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .whatsapp { background: #25D366; }
+    .telegram { background: #0088cc; }
+
+    /* Botão Fechar */
+    .btn-close-popup {
+        margin-top: 15px;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.5);
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+</style>
+
+<script>
+    // Função para mostrar o pop-up ao carregar
+    window.onload = function() {
+        setTimeout(function() {
+            document.getElementById('welcomePopup').classList.add('active');
+        }, 500); // Meio segundo de atraso para suavizar
+    };
+
+    function closePopup() {
+        document.getElementById('welcomePopup').classList.remove('active');
+    }
+</script>
+
 {% endblock %}
