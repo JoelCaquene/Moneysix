@@ -310,7 +310,7 @@ def process_task(request):
         active_user_level = UserLevel.objects.filter(user=user, is_active=True).select_related('level').first()
 
         if active_user_level:
-            # Usuário com Plano Pago
+            # Usuário com VIP Pago
             task_earnings = Decimal(str(active_user_level.level.daily_gain))
         else:
             # LOGICA DE ESTAGIÁRIO
