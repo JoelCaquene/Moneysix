@@ -2,7 +2,7 @@
 .DS_Store
 .env
 
-# Banco de Dados Local
+# Banco de Dados Localmente
 db.sqlite3
 
 # Diretórios Gerados
