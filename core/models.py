@@ -150,7 +150,7 @@ class Roulette(models.Model):
     spin_date = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=True)
 
-# --- SISTEMA DE POUPANÇA PROGRAMADA (INVEST BBDO) ---
+# --- SISTEMA DE POUPANÇA PROGRAMADA (INVEST moneysix) ---
 
 from decimal import Decimal # Garanta que isso está no topo do seu arquivo
 

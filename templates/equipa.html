@@ -1,91 +1,89 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Estrutura dos Agentes | BBDO{% endblock %}
+{% block title %}Estrutura VIP | moneysix{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
-<div class="equipa-container">
+<div class="vip-structure-container">
     
     {# TOPO NAVEGAÇÃO #}
-    <div class="top-header">
-        <a href="{% url 'menu' %}" class="btn-back">
-            <i class="fas fa-chevron-left"></i>
+    <div class="nav-header">
+        <a href="{% url 'menu' %}" class="back-circle">
+            <i class="fas fa-arrow-left"></i>
         </a>
-        <h1 class="page-title">ESTRUTURA DOS AGENTES</h1>
-        <div style="width: 32px;"></div> {# Compensação para centralizar título #}
+        <h1 class="nav-title">MINHA REDE VIP</h1>
+        <div style="width: 40px;"></div>
     </div>
 
-    {# INDICADORES DE CONTABILIDADE #}
-    <div class="stats-grid">
-        <div class="stat-card glass-card">
-            <div class="stat-icon"><i class="fas fa-users"></i></div>
-            <div class="stat-info">
-                <span class="stat-value">{{ level_a_count }}</span>
-                <span class="stat-label">Membros</span>
+    {# CARDS REDONDOS DE ESTATÍSTICAS #}
+    <div class="circle-stats-row">
+        <div class="circle-card shadow-sm">
+            <div class="c-icon"><i class="fas fa-crown"></i></div>
+            <div class="c-data">
+                <span class="c-num">{{ level_a_count }}</span>
+                <span class="c-lab">Membros</span>
             </div>
         </div>
-        <div class="stat-card glass-card">
-            <div class="stat-icon" style="color: #00ff88;"><i class="fas fa-user-check"></i></div>
-            <div class="stat-info">
-                <span class="stat-value">{{ level_a_investors }}</span>
-                <span class="stat-label">Investidores</span>
+        <div class="circle-card shadow-sm investor-theme">
+            <div class="c-icon"><i class="fas fa-gem"></i></div>
+            <div class="c-data">
+                <span class="c-num">{{ level_a_investors }}</span>
+                <span class="c-lab">Investidores</span>
             </div>
         </div>
     </div>
 
-    {# LINK DE CONVITE #}
-    <div class="invite-section glass-card">
-        <div class="invite-header">
-            <i class="fas fa-link"></i>
-            <span>Link de Convite Individual</span>
+    {# LINK DE CONVITE PERSONALIZADO #}
+    <div class="invite-card shadow-sm">
+        <div class="invite-info">
+            <i class="fas fa-share-nodes"></i>
+            <div>
+                <p class="invite-label">Link de Convite VIP</p>
+                <span id="invite-link-text">{{ invite_link }}</span>
+            </div>
         </div>
-        <div class="invite-box">
-            <span id="invite-link-text">{{ invite_link }}</span>
-            <button onclick="copyInvite()" id="btn-copy"><i class="fas fa-copy"></i></button>
-        </div>
-        <div class="instruction-box">
-            <p><i class="fas fa-info-circle"></i> Copie o seu link de convite e envie às pessoas próximas. Ganhe <strong>15%</strong> por cada convite bem-sucedido dos seus agentes.</p>
-        </div>
+        <button onclick="copyInvite()" id="btn-copy" class="btn-copy-action">
+            <i class="fas fa-clone"></i>
+        </button>
     </div>
 
-    {# LISTA DE AGENTES (FILTRADA PARA PAGOS) #}
-    <div class="team-list-section">
-        <h2 class="section-title">MEUS AGENTES ATIVOS</h2>
+    <div class="bonus-hint">
+        <i class="fas fa-gift"></i>
+        <span>Ganhe <strong>15%</strong> de comissão sobre seus subordinados VIP.</span>
+    </div>
+
+    {# LISTA DE SUBORDINADOS VIP #}
+    <div class="subordinate-section">
+        <h2 class="list-title">MEUS SUBORDINADOS VIP</h2>
         
-        <div class="member-list">
+        <div class="vip-list">
             {% for member in level_a %}
                 {% with active_level=member.userlevel_set.filter.first %}
                 {% if active_level and active_level.is_active %}
-                    <div class="member-card glass-card">
-                        <div class="member-main-info">
-                            <div class="member-avatar">
-                                <i class="fas fa-user-tie"></i>
+                    <div class="vip-member-card shadow-sm">
+                        <div class="member-left">
+                            <div class="avatar-circle">
+                                <i class="fas fa-shield-halved"></i>
                             </div>
-                            <div class="member-details">
-                                <span class="m-id">{{ member.phone_number }}</span>
-                                <span class="m-date">Desde: {{ active_level.purchase_date|date:"d/m/Y" }}</span>
+                            <div class="member-info">
+                                <span class="member-phone">{{ member.phone_number }}</span>
+                                <span class="member-join-date">{{ active_level.purchase_date|date:"d M, Y" }}</span>
                             </div>
                         </div>
                         
-                        <div class="member-status-area">
-                            <div class="m-badge">{{ active_level.level.name }}</div>
-                            <div class="task-indicator">
-                                {% if member.task_set.last.completed_at|date:"Y-m-d" == today|date:"Y-m-d" or member.task_set.last.task_day|date:"Y-m-d" == today|date:"Y-m-d" %}
-                                    <span class="task-done"><i class="fas fa-check-circle"></i> Feito</span>
-                                {% else %}
-                                    <span class="task-pending"><i class="fas fa-clock"></i> Pendente</span>
-                                {% endif %}
-                            </div>
+                        <div class="member-right">
+                            <div class="vip-tag">{{ active_level.level.name }}</div>
                         </div>
                     </div>
                 {% endif %}
                 {% endwith %}
             {% empty %}
-                <div class="empty-state glass-card">
-                    <i class="fas fa-user-slash"></i>
-                    <p>Nenhum investidor ativo nível 1.</p>
+                <div class="empty-list shadow-sm">
+                    <i class="fas fa-user-group"></i>
+                    <p>Ainda não tens subordinados VIP ativos.</p>
                 </div>
             {% endfor %}
         </div>
@@ -94,151 +92,153 @@
 
 <style>
     :root {
-        --primary-lilac: #a29bfe;
-        --deep-lilac: #6c5ce7;
-        --glass: rgba(255, 255, 255, 0.08);
-        --text-light: #f1f2f6;
+        --vip-gold: #ffb900;
+        --vip-purple: #6c5ce7;
+        --vip-dark: #2d3436;
+        --bg-white: #ffffff;
+        --bg-soft: #f8f9fd;
+        --text-gray: #636e72;
     }
-
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     body {
-        background: radial-gradient(circle at top left, #2d3436, #000);
-        background-attachment: fixed;
-        color: var(--text-light);
-        font-family: 'Poppins', sans-serif;
+        background-color: var(--bg-white) !important;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: var(--vip-dark);
         margin: 0;
-        overflow-x: hidden; /* Bloqueia rolagem lateral */
+        padding: 0;
+        overflow-x: hidden;
     }
 
-    .equipa-container {
+    .vip-structure-container {
         width: 100%;
-        max-width: 450px; /* Otimizado para dispositivos mobile */
+        max-width: 480px;
         margin: 0 auto;
-        padding: 15px 12px 100px;
+        padding: 20px 15px 100px;
     }
 
-    /* Topo */
-    .top-header {
+    /* Navegação */
+    .nav-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+    .back-circle {
+        width: 40px; height: 40px;
+        background: var(--bg-soft);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--vip-dark); text-decoration: none;
+    }
+    .nav-title { font-size: 1.1rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+
+    /* Cards Estatísticas Redondos */
+    .circle-stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .circle-card {
+        background: var(--bg-white);
+        padding: 15px;
+        border-radius: 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid #f1f1f1;
+    }
+    .c-icon {
+        width: 45px; height: 45px;
+        background: rgba(108, 92, 231, 0.1);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--vip-purple); font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .investor-theme .c-icon {
+        background: rgba(255, 185, 0, 0.1);
+        color: var(--vip-gold);
+    }
+    .c-num { display: block; font-size: 1.3rem; font-weight: 800; }
+    .c-lab { font-size: 0.7rem; color: var(--text-gray); font-weight: 600; text-transform: uppercase; }
+
+    /* Card de Convite */
+    .invite-card {
+        background: var(--vip-dark);
+        border-radius: 20px;
+        padding: 15px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
-    }
-    .btn-back {
-        width: 35px;
-        height: 35px;
-        background: var(--glass);
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         color: white;
-        text-decoration: none;
-        border: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 12px;
     }
-    .page-title {
-        font-size: 0.95rem;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-        color: var(--primary-lilac);
-        margin: 0;
-    }
-
-    /* Cards */
-    .glass-card {
-        background: rgba(162, 155, 254, 0.04);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(162, 155, 254, 0.15);
-        border-radius: 18px;
+    .invite-info { display: flex; align-items: center; gap: 12px; overflow: hidden; }
+    .invite-info i { font-size: 1.4rem; color: var(--vip-purple); }
+    .invite-label { font-size: 0.7rem; opacity: 0.7; margin: 0; }
+    #invite-link-text { font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+    .btn-copy-action {
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 12px;
+        cursor: pointer;
     }
 
-    /* Indicadores */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-    .stat-card {
-        padding: 12px;
+    .bonus-hint {
+        background: rgba(108, 92, 231, 0.05);
+        padding: 10px 15px;
+        border-radius: 12px;
+        font-size: 0.75rem;
         display: flex;
         align-items: center;
         gap: 8px;
+        margin-bottom: 30px;
+        color: var(--vip-purple);
     }
-    .stat-icon { font-size: 1.2rem; color: var(--primary-lilac); }
-    .stat-value { display: block; font-size: 1.1rem; font-weight: 800; }
-    .stat-label { font-size: 0.65rem; color: #b2bec3; text-transform: uppercase; }
 
-    /* Convite */
-    .invite-section { padding: 15px; margin-bottom: 25px; }
-    .invite-header { font-size: 0.8rem; margin-bottom: 10px; color: var(--primary-lilac); }
-    .invite-box {
-        display: flex;
-        background: rgba(0, 0, 0, 0.3);
-        padding: 10px;
-        border-radius: 10px;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        border: 1px dashed rgba(162, 155, 254, 0.3);
-    }
-    #invite-link-text {
-        font-size: 0.75rem;
-        color: #dfe6e9;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 80%;
-    }
-    #btn-copy { background: none; border: none; color: var(--primary-lilac); font-size: 1.1rem; }
-    .instruction-box p { font-size: 0.7rem; line-height: 1.4; color: #b2bec3; margin: 0; }
-
-    /* Lista */
-    .section-title {
-        font-size: 0.8rem;
-        font-weight: 700;
+    /* Lista de Subordinados */
+    .list-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 15px; color: var(--vip-dark); }
+    .vip-member-card {
+        background: var(--bg-white);
+        border-radius: 20px;
+        padding: 15px;
         margin-bottom: 12px;
-        color: #fff;
-        border-left: 3px solid var(--deep-lilac);
-        padding-left: 8px;
-    }
-    .member-card {
-        padding: 12px;
-        margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        border: 1px solid #f1f1f1;
     }
-    .member-main-info { display: flex; align-items: center; gap: 10px; }
-    .member-avatar {
-        width: 38px;
-        height: 38px;
-        background: var(--deep-lilac);
+    .member-left { display: flex; align-items: center; gap: 12px; }
+    .avatar-circle {
+        width: 42px; height: 42px;
+        background: var(--bg-soft);
+        color: var(--vip-purple);
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
+        display: flex; align-items: center; justify-content: center;
     }
-    .m-id { font-weight: 700; font-size: 0.85rem; display: block; }
-    .m-date { font-size: 0.6rem; color: #636e72; }
+    .member-phone { display: block; font-weight: 700; font-size: 0.9rem; }
+    .member-join-date { font-size: 0.7rem; color: var(--text-gray); }
 
-    .member-status-area { text-align: right; }
-    .m-badge {
-        font-size: 0.6rem;
-        background: rgba(0, 255, 136, 0.1);
-        color: #00ff88;
-        padding: 1px 6px;
-        border-radius: 4px;
+    .vip-tag {
+        background: linear-gradient(135deg, var(--vip-gold), #e67e22);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 100px;
+        font-size: 0.65rem;
         font-weight: 800;
     }
-    .task-indicator { font-size: 0.65rem; margin-top: 4px; font-weight: 600; }
-    .task-done { color: #00ff88; }
-    .task-pending { color: #ff7675; }
 
-    .empty-state { text-align: center; padding: 30px; color: #636e72; font-size: 0.8rem; }
+    .empty-list {
+        text-align: center; padding: 40px; color: var(--text-gray);
+        background: var(--bg-soft); border-radius: 20px;
+    }
+    .empty-list i { font-size: 2rem; margin-bottom: 10px; opacity: 0.3; }
+
+    .shadow-sm { box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
 </style>
 
 <script>
@@ -246,8 +246,13 @@
         const text = document.getElementById('invite-link-text').innerText;
         const btn = document.getElementById('btn-copy');
         navigator.clipboard.writeText(text).then(() => {
+            const original = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i>';
-            setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+            btn.style.background = '#2ed573';
+            setTimeout(() => { 
+                btn.innerHTML = original; 
+                btn.style.background = 'rgba(255,255,255,0.1)';
+            }, 2000);
         });
     }
 </script>

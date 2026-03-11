@@ -5,214 +5,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BBDO - {% trans "Cadastro" %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
+    <title>moneysix - {% trans "Cadastro" %}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --bg-purple: #4a00ac; 
-            --btn-gold-start: #ccab66; 
-            --btn-gold-end: #937438;
-            --btn-black: #000000;
-            --input-bg: #f3f7ff; 
-            --logo-red: #ff0000; 
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%);
+            --text-white: #ffffff;
+            --input-focus-border: #00d4ff; /* Cor vibrante ao tocar/focar */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-purple);
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(180deg, #1a73e8 0%, #0d47a1 50%, #000000 100%);
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            color: var(--text-white);
         }
 
         .main-wrapper {
             width: 100%;
             max-width: 450px;
-            background-color: var(--bg-purple);
-            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: 30px;
-            overflow-x: hidden;
+            padding: 40px 20px;
         }
 
-        /* TOPO BRANCO REDUZIDO PARA MELHOR ESTÉTICA */
-        .top-white-bg {
-            width: 100%;
-            background-color: #ffffff;
-            height: 160px; /* Reduzi de 220px para 160px */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            z-index: 1;
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        .header-section .logo-text {
-            font-family: 'Noto Serif', serif; 
-            font-size: 60px; 
-            color: var(--logo-red);
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-top: -10px; /* Sobe um pouco a logo */
-            z-index: 2;
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 58px;
+            font-style: italic;
+            color: #ffffff;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            letter-spacing: -2px;
         }
 
-        .wave-container {
-            position: absolute;
-            bottom: -45px; /* Ajustado para a nova altura */
-            left: 0;
-            width: 100%;
-            line-height: 0;
-            z-index: 5;
-        }
-
-        .wave-container svg {
-            width: 100%;
-            height: 60px; /* Curva mais discreta e elegante */
-        }
-
-        /* CARD DE FORMULÁRIO */
         .register-card {
-            background: #ffffff;
-            width: 92%; 
-            border-radius: 35px; 
-            padding: 30px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 10;
-            margin-top: 15px; /* Encaixe mais justo à curva */
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            border-radius: 35px;
+            padding: 35px 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
         }
 
-        .form-group { margin-bottom: 15px; position: relative; }
+        .form-group { margin-bottom: 25px; position: relative; }
         
         .form-group label {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 700;
-            color: #333;
-            margin-bottom: 5px;
+            color: #ffffff;
+            margin-bottom: 10px;
             text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
         .input-wrapper {
             position: relative;
             display: flex;
             align-items: center;
+            transition: all 0.3s ease;
         }
 
+        /* ÍCONES COM ALTA VISIBILIDADE */
         .input-wrapper i.main-icon {
             position: absolute;
-            left: 15px;
-            color: #8e8e8e;
-            font-size: 1rem;
-            z-index: 6;
+            left: 18px;
+            color: #ffffff; /* Branco puro para legibilidade */
+            font-size: 1.2rem;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.2));
         }
 
-        .auth-form input {
+        /* ESTILO DO FORMULÁRIO ONDE VOCÊ MARCOU */
+        .auth-form input, .country-code-select {
             width: 100%;
-            padding: 14px 15px 14px 48px;
-            border: none;
-            background-color: var(--input-bg);
-            border-radius: 12px;
-            font-size: 0.9rem;
+            padding: 16px 15px 16px 55px;
+            border: 2px solid var(--glass-border); /* Borda mais visível */
+            background: rgba(255, 255, 255, 0.15); /* Fundo mais nítido */
+            border-radius: 18px;
+            font-size: 1.05rem;
             outline: none;
-            color: #333;
+            color: #ffffff; /* Letra branca para ser legível */
+            transition: all 0.3s ease;
         }
 
-        .input-phone { padding-left: 95px !important; }
+        /* COR DO PLACEHOLDER (Texto de exemplo) */
+        .auth-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+        }
+
+        /* EFEITO AO TOCAR/CLICAR (ONDE VOCÊ MARCOU) */
+        .auth-form input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .input-phone { padding-left: 110px !important; }
 
         .country-code-select {
             position: absolute;
-            left: 10px;
-            width: 80px;
+            left: 5px;
+            width: 95px;
             border: none;
             background: transparent;
-            font-weight: 700;
-            z-index: 7;
-            outline: none;
+            font-weight: 800;
+            z-index: 11;
+            color: #ffffff;
             height: 100%;
-            font-size: 0.9rem;
+            padding-left: 15px;
+            cursor: pointer;
         }
 
         .toggle-password {
             position: absolute;
-            right: 15px;
+            right: 18px;
             cursor: pointer;
-            color: #aaa;
-            z-index: 7;
+            color: #ffffff;
+            font-size: 1.1rem;
+            z-index: 10;
         }
 
-        /* BOTÕES */
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-            width: 100%;
-            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
         }
 
         .btn-register {
             width: 100%;
-            padding: 16px;
+            padding: 20px;
             border: none;
-            border-radius: 50px; 
-            background: var(--btn-black);
-            color: white;
-            font-size: 1rem;
-            font-weight: 700;
+            border-radius: 20px;
+            background: #ffffff;
+            color: #000000;
+            font-size: 1.1rem;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        .btn-register img {
-            width: 30px;
-            margin-left: 10px;
-        }
+        .btn-register i { margin-left: 12px; }
 
         .btn-login-link {
             width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 50px; 
-            background: linear-gradient(to bottom, var(--btn-gold-start), var(--btn-gold-end));
-            color: white;
-            font-size: 1rem;
-            font-weight: 700;
+            padding: 20px;
+            border-radius: 20px;
+            background: var(--gold-gradient);
+            color: #4a3300;
+            font-size: 1.1rem;
+            font-weight: 800;
             text-align: center;
             text-decoration: none;
             text-transform: uppercase;
         }
 
         .separator-text {
-            color: #aaa;
-            font-size: 0.75rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin: 5px 0;
             font-weight: 600;
         }
+        
+        /* Ajuste para ícones das bandeiras no select */
+        option { background: #0d47a1; color: #fff; }
     </style>
 </head>
 <body>
 
     <div class="main-wrapper">
-        <div class="top-white-bg">
-            <div class="header-section">
-                <div class="logo-text">BBDO</div>
-            </div>
-            
-            <div class="wave-container">
-                <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-                    <path d="M0,45 C150,140 350,-40 500,45 L500,0 L0,0 Z" fill="none" stroke="#ff0000" stroke-width="2"></path>
-                    <path d="M0,50 C150,150 350,-50 500,50 L500,0 L0,0 Z" fill="#ffffff"></path>
-                </svg>
-            </div>
+        <div class="header-section">
+            <div class="logo-text">moneysix</div>
         </div>
 
         <div class="register-card">
@@ -223,50 +213,50 @@
                     <label>{% trans "Número de Telefone" %}</label>
                     <div class="input-wrapper">
                         <select class="country-code-select" name="country_code">
-                            <option value="+244">+244</option>
-                            <option value="+351">+351</option>
-                            <option value="+55">+55</option>
+                            <option value="+244">AO +244</option>
+                            <option value="+351">PT +351</option>
+                            <option value="+55">BR +55</option>
                         </select>
-                        <input type="text" name="phone_number" class="input-phone" placeholder="940000000" required>
+                        <input type="text" name="phone_number" class="input-phone" placeholder="" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>{% trans "Palavra Passe" %}</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-lock main-icon"></i>
+                        <i class="fa-solid fa-fingerprint main-icon"></i>
                         <input type="password" name="password" id="password" placeholder="{% trans 'Crie sua senha' %}" required>
-                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('password', this)"></i>
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePass('password', this)"></i>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>{% trans "Repita Senha" %}</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-shield-halved main-icon"></i>
+                        <i class="fa-solid fa-circle-check main-icon"></i>
                         <input type="password" name="confirm_password" id="confirm_password" placeholder="{% trans 'Repita a senha' %}" required>
-                        <i class="fa-solid fa-eye-slash toggle-password" onclick="togglePass('confirm_password', this)"></i>
+                        <i class="fa-solid fa-eye toggle-password" onclick="togglePass('confirm_password', this)"></i>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>{% trans "Código de Convite" %}</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-qrcode main-icon"></i>
+                        <i class="fa-solid fa-ticket main-icon"></i>
                         <input type="text" name="invited_by_code" placeholder="{% trans 'Opcional' %}" value="{{ request.GET.invite|default:'' }}">
                     </div>
                 </div>
                 
                 <div class="action-buttons">
                     <button type="submit" class="btn-register">
-                        {% trans "Registar-se" %}
-                        <img src="https://cdn-icons-png.flaticon.com/512/2554/2554978.png" alt="truck">
+                        {% trans "Criar Conta" %}
+                        <i class="fa-solid fa-arrow-right-long"></i>
                     </button>
 
-                    <div class="separator-text">or</div>
+                    <div class="separator-text">{% trans "ou" %}</div>
 
                     <a href="{% url 'login' %}" class="btn-login-link">
-                        {% trans "Entrar" %}
+                        {% trans "Já tenho conta" %}
                     </a>
                 </div>
             </form>
@@ -278,10 +268,10 @@
             const input = document.getElementById(id);
             if (input.type === "password") {
                 input.type = "text";
-                el.classList.replace("fa-eye-slash", "fa-eye");
+                el.classList.replace("fa-eye", "fa-eye-slash");
             } else {
                 input.type = "password";
-                el.classList.replace("fa-eye", "fa-eye-slash");
+                el.classList.replace("fa-eye-slash", "fa-eye");
             }
         }
     </script>

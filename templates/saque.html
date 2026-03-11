@@ -1,269 +1,204 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Centro de Saque - BBDO{% endblock %}
+{% block title %}Centro de Saque - moneysix{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <div class="withdraw-viewport">
-    <div class="glow-bg"></div>
-    <div class="glow-sphere"></div>
-
     <div class="withdraw-dashboard">
         
-        {# NAV TOPO #}
+        {# HEADER #}
         <div class="top-nav-withdraw">
-            <a href="javascript:history.back()" class="btn-back-glass">
+            <a href="javascript:history.back()" class="btn-back">
                 <i class="fas fa-chevron-left"></i>
             </a>
-            <span class="nav-title">CENTRO DE LEVANTAMENTO</span>
+            <span class="nav-title">LEVANTAMENTO</span>
+            <button class="btn-extrato" onclick="toggleExtrato()">
+                <i class="fas fa-file-invoice-dollar"></i> EXTRATO
+            </button>
         </div>
 
-        {# CARD DE SALDO - PREMIUM GLOW #}
-        <div class="balance-card-glow">
-            <div class="balance-info">
-                <span class="label">SALDO DISPONÍVEL</span>
-                <h2 class="value">KZ {{ request.user.available_balance|default:"0.00" }}</h2>
-            </div>
-            <div class="balance-icon-box">
+        {# CARD DE SALDO - VISÍVEL E COMPACTO #}
+        <div class="balance-card">
+            <div class="icon-box">
                 <i class="fas fa-wallet"></i>
             </div>
+            <div class="balance-txt">
+                <span class="label">Saldo Disponível</span>
+                <h2 class="value">KZ {{ request.user.available_balance|default:"0.00" }}</h2>
+            </div>
         </div>
 
-        {# FORMULÁRIO DE DIGITAÇÃO #}
-        <div class="glass-container main-action-card">
+        {# FORMULÁRIO PRINCIPAL #}
+        <div class="main-card">
             <form method="post" id="form-saque">
                 {% csrf_token %}
                 <input type="hidden" name="withdrawal_method" value="BANCO"> 
                 
-                <div class="input-section">
-                    <label class="premium-label"><i class="fas fa-coins"></i> Quanto deseja levantar?</label>
-                    <div class="custom-input-group">
-                        <span class="currency-tag">KZ</span>
-                        <input type="number" name="amount" id="id_amount" step="0.01" required placeholder="0.00">
-                    </div>
+                <label class="input-label">Quanto deseja levantar?</label>
+                <div class="input-container">
+                    <span class="prefix">KZ</span>
+                    <input type="number" name="amount" id="id_amount" step="0.01" required placeholder="0.00">
                 </div>
 
-                <div id="tax-display" class="tax-info-glass">
-                    <div class="tax-line">
+                <div class="calc-box">
+                    <div class="row">
                         <span>Taxa Admin (10%)</span>
-                        <span id="tax-val">0.00 KZ</span>
+                        <span id="tax-val" style="color: #ff4757;">0.00 KZ</span>
                     </div>
-                    <div class="tax-line total">
-                        <span>Líquido a Receber</span>
-                        <span id="net-val">0.00 KZ</span>
+                    <div class="row total">
+                        <span>Receberá</span>
+                        <span id="net-val" style="color: #2ed573;">0.00 KZ</span>
                     </div>
                 </div>
 
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert-premium {{ message.tags }}">
-                            <i class="fas {% if 'success' in message.tags %}fa-check-double{% else %}fa-exclamation-circle{% endif %}"></i> 
-                            {{ message }}
-                        </div>
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
 
-                <button type="submit" class="btn-confirm-saque">
+                <button type="submit" class="btn-submit">
                     CONFIRMAR SAQUE <i class="fas fa-arrow-right"></i>
                 </button>
             </form>
         </div>
 
-        {# SEÇÃO EXTRATO #}
-        <div class="extrato-container">
-            <div class="extrato-header">
-                <h3><i class="fas fa-history"></i> EXTRATO DE SAQUES</h3>
+        {# REGRAS DE SAQUE #}
+        <div class="info-section">
+            <h4 class="info-header"><i class="fas fa-info-circle"></i> Regras de Levantamento</h4>
+            <div class="info-grid">
+                <div class="info-item"><i class="fas fa-minus-circle"></i> Mínimo: 2.000 KZ</div>
+                <div class="info-item"><i class="fas fa-calendar-alt"></i> Seg a Sábado</div>
+                <div class="info-item"><i class="fas fa-clock"></i> 08:30 às 17:00</div>
+                <div class="info-item"><i class="fas fa-bolt"></i> 5min a 24h</div>
             </div>
+        </div>
 
-            <div class="extrato-list">
-                {% if withdrawal_records %}
-                    {% for w in withdrawal_records %}
-                    <div class="extrato-card">
-                        <div class="card-header">
-                            <div class="id-info">
-                                <span class="id-tag">REF: #{{ w.id }}</span>
-                                <span class="day-tag">{{ w.created_at|date:"l" }}</span>
-                            </div>
-                            <div class="status-pill {% if w.status == 'Aprovado' %}st-success{% elif w.status == 'Pendente' %}st-pending{% else %}st-error{% endif %}">
-                                {% if w.status == 'Aprovado' %}
-                                    <i class="fas fa-circle-check"></i> SUCESSO
-                                {% elif w.status == 'Pendente' %}
-                                    <i class="fas fa-spinner fa-spin"></i> PENDENTE
-                                {% else %}
-                                    <i class="fas fa-circle-xmark"></i> REJEITADO
-                                {% endif %}
-                            </div>
-                        </div>
+    </div>
+</div>
 
-                        <div class="card-body">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <small>Valor</small>
-                                    <strong>KZ {{ w.amount }}</strong>
-                                </div>
-                                <div class="info-item">
-                                    <small>Destino (IBAN)</small>
-                                    <span class="iban-text">{{ w.user.bank_details.IBAN|default:"Não configurado" }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer">
-                            <span><i class="far fa-clock"></i> {{ w.created_at|date:"d/m - H:i" }}</span>
-                            {% if w.status == 'Aprovado' %}
-                            <span class="success-time"><i class="fas fa-check-double"></i> Pago: {{ w.updated_at|date:"H:i" }}</span>
-                            {% endif %}
-                        </div>
+{# MODAL DE EXTRATO (SOBREPOSIÇÃO) #}
+<div id="modal-extrato" class="modal-overlay">
+    <div class="modal-body">
+        <div class="modal-head">
+            <h3>Meu Extrato</h3>
+            <button onclick="toggleExtrato()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="history-list">
+            {% if withdrawal_records %}
+                {% for w in withdrawal_records %}
+                <div class="h-card">
+                    <div class="h-info">
+                        <span class="h-date">{{ w.created_at|date:"d/m - H:i" }}</span>
+                        <span class="h-ref">REF #{{ w.id }}</span>
                     </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-receipt"></i>
-                        <p>Nenhum registro encontrado.</p>
+                    <div class="h-status">
+                        <span class="h-amt">KZ {{ w.amount }}</span>
+                        <span class="h-state {% if w.status == 'Aprovado' %}green{% elif w.status == 'Pendente' %}orange{% else %}red{% endif %}">
+                            {{ w.status }}
+                        </span>
                     </div>
-                {% endif %}
-            </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty">Nenhum registro.</div>
+            {% endif %}
         </div>
     </div>
 </div>
 
 <style>
-    /* FUNDO LILÁS ESCURO COM BRILHO */
+    :root {
+        --primary: #5f27cd;
+        --text: #2f3542;
+        --bg: #ffffff;
+        --card-bg: #f1f2f6;
+    }
+
     body {
-        background: #0d0118; /* Lilás quase preto */
-        background-attachment: fixed;
-        min-height: 100vh;
-        color: white;
-        font-family: 'Montserrat', sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        margin: 0; padding: 0;
         overflow-x: hidden;
     }
 
-    /* Efeito de Brilho no Fundo */
-    .glow-bg {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: radial-gradient(circle at 50% -20%, #6c5ce7 0%, transparent 60%);
-        z-index: -1;
-        opacity: 0.4;
-    }
-    .glow-sphere {
-        position: fixed;
-        bottom: -10%; right: -10%;
-        width: 300px; height: 300px;
-        background: #a29bfe;
-        filter: blur(120px);
-        z-index: -1;
-        opacity: 0.2;
-    }
+    .withdraw-viewport { width: 100%; padding: 20px 15px; box-sizing: border-box; }
+    .withdraw-dashboard { width: 100%; max-width: 450px; margin: 0 auto; }
 
-    .withdraw-viewport { padding: 20px 15px; display: flex; justify-content: center; position: relative; }
-    .withdraw-dashboard { width: 100%; max-width: 450px; }
+    /* HEADER */
+    .top-nav-withdraw { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+    .btn-back { font-size: 1.2rem; color: var(--text); text-decoration: none; }
+    .nav-title { font-weight: 800; font-size: 1.1rem; color: var(--text); }
+    .btn-extrato { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-    /* VOLTAR */
-    .btn-back-glass { 
-        width: 45px; height: 45px; background: rgba(255,255,255,0.05); 
-        border-radius: 15px; display: flex; align-items: center; justify-content: center;
-        color: #a29bfe; border: 1px solid rgba(162, 155, 254, 0.2); text-decoration: none;
+    /* CARDS */
+    .balance-card { 
+        background: white; border: 1px solid #e1e1e1; padding: 15px; border-radius: 20px; 
+        display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .nav-title { margin-left: 15px; font-weight: 900; letter-spacing: 1px; color: white; font-size: 1rem; }
+    .icon-box { background: #eeefff; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.2rem; }
+    .balance-txt .label { font-size: 0.75rem; color: #747d8c; display: block; font-weight: 600; }
+    .balance-txt .value { font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--primary); }
 
-    /* CARD SALDO */
-    .balance-card-glow {
-        background: linear-gradient(135deg, rgba(108, 92, 231, 0.4), rgba(162, 155, 254, 0.1));
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(162, 155, 254, 0.3);
-        padding: 25px; border-radius: 30px; margin: 25px 0;
-        display: flex; justify-content: space-between; align-items: center;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(162, 155, 254, 0.1);
-    }
-    .balance-info .label { font-size: 0.7rem; color: #a29bfe; font-weight: 700; letter-spacing: 1.5px; }
-    .balance-info .value { font-size: 2rem; margin: 5px 0 0 0; font-weight: 900; text-shadow: 0 0 15px rgba(162, 155, 254, 0.5); }
-    .balance-icon-box { background: rgba(162, 155, 254, 0.1); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #a29bfe; }
-
-    /* FORMULÁRIO */
-    .glass-container {
-        background: rgba(255, 255, 255, 0.03);
-        border-radius: 30px; border: 1px solid rgba(255,255,255,0.08);
-        padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
-    .premium-label { color: #a29bfe; font-size: 0.85rem; font-weight: 700; margin-bottom: 15px; display: block; }
-    .custom-input-group {
-        background: rgba(0,0,0,0.3); border-radius: 18px; padding: 18px;
-        display: flex; align-items: center; border: 1px solid rgba(162, 155, 254, 0.2);
-    }
-    .currency-tag { font-weight: 900; color: #a29bfe; margin-right: 12px; font-size: 1.1rem; }
-    .custom-input-group input { background: transparent; border: none; color: white; font-size: 1.5rem; font-weight: 900; width: 100%; outline: none; }
-
-    /* TAXA */
-    .tax-info-glass { margin-top: 20px; background: rgba(162, 155, 254, 0.05); padding: 15px; border-radius: 15px; }
-    .tax-line { display: flex; justify-content: space-between; font-size: 0.75rem; color: #dcdde1; margin-bottom: 5px; }
-    .tax-line.total { color: #00d1b2; font-size: 0.9rem; font-weight: 900; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
-
-    /* BOTÃO SACAR */
-    .btn-confirm-saque {
-        width: 100%; margin-top: 25px; padding: 20px; border-radius: 18px;
-        background: linear-gradient(90deg, #6c5ce7, #a29bfe); color: white;
-        border: none; font-weight: 900; cursor: pointer; transition: 0.4s;
-        box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4); text-transform: uppercase;
-    }
-    .btn-confirm-saque:active { transform: scale(0.96); }
-
-    /* EXTRATO */
-    .extrato-container { margin-top: 40px; }
-    .extrato-header h3 { font-size: 0.9rem; color: white; letter-spacing: 2px; font-weight: 900; margin-bottom: 20px; }
+    .main-card { background: white; border: 1px solid #e1e1e1; padding: 20px; border-radius: 25px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .input-label { font-weight: 700; color: #57606f; font-size: 0.9rem; }
     
-    .extrato-card {
-        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 22px; padding: 20px; margin-bottom: 15px; transition: 0.3s;
-    }
-    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-    .id-tag { display: block; font-size: 0.65rem; color: #a29bfe; font-weight: 900; }
-    .day-tag { font-size: 0.8rem; font-weight: 400; opacity: 0.6; text-transform: capitalize; }
-    
-    .status-pill { font-size: 0.65rem; font-weight: 900; padding: 6px 12px; border-radius: 10px; }
-    .st-success { background: rgba(0, 209, 178, 0.1); color: #00d1b2; border: 1px solid rgba(0, 209, 178, 0.3); }
-    .st-pending { background: rgba(255, 187, 51, 0.1); color: #ffbb33; border: 1px solid rgba(255, 187, 51, 0.3); }
-    .st-error { background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid rgba(255, 68, 68, 0.3); }
+    .input-container { background: #f1f2f6; padding: 15px; border-radius: 15px; display: flex; align-items: center; margin: 10px 0; border: 2px solid transparent; }
+    .input-container:focus-within { border-color: var(--primary); background: white; }
+    .prefix { font-weight: 800; color: var(--primary); margin-right: 10px; }
+    .input-container input { background: transparent; border: none; outline: none; font-size: 1.4rem; font-weight: 800; width: 100%; color: var(--text); }
 
+    .calc-box { background: #f8f9fa; border-radius: 15px; padding: 15px; margin: 15px 0; }
+    .row { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+    .row.total { border-top: 1px dashed #ced4da; margin-top: 10px; padding-top: 10px; font-weight: 800; font-size: 1rem; }
+
+    .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 8px 15px rgba(95, 39, 205, 0.2); }
+
+    /* INFO SECTION */
+    .info-section { background: #f1f2f6; padding: 20px; border-radius: 20px; border: 1px solid #ddd; }
+    .info-header { font-size: 0.85rem; margin-bottom: 15px; font-weight: 800; color: var(--primary); }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .info-item small { display: block; font-size: 0.6rem; opacity: 0.5; margin-bottom: 4px; text-transform: uppercase; }
-    .info-item strong { font-size: 1rem; color: white; }
-    .iban-text { font-size: 0.75rem; color: #a29bfe; font-weight: 600; }
+    .info-item { background: white; padding: 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; color: #57606f; display: flex; align-items: center; gap: 6px; }
 
-    .card-footer { 
-        margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.03);
-        display: flex; justify-content: space-between; font-size: 0.7rem; opacity: 0.5;
-    }
-    .success-time { color: #00d1b2; opacity: 1; font-weight: 700; }
+    /* MODAL */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: none; align-items: flex-end; }
+    .modal-body { background: white; width: 100%; height: 85%; border-radius: 30px 30px 0 0; padding: 25px; box-sizing: border-box; overflow-y: auto; }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
+    .close-btn { background: #f1f2f6; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
 
-    /* ALERTAS */
-    .alert-premium { padding: 15px; border-radius: 15px; font-size: 0.8rem; margin-top: 15px; font-weight: 700; text-align: center; }
-    .alert-premium.error { background: rgba(255, 68, 68, 0.1); color: #ff8888; border: 1px solid rgba(255, 68, 68, 0.2); }
-    .alert-premium.success { background: rgba(0, 209, 178, 0.1); color: #00d1b2; border: 1px solid rgba(0, 209, 178, 0.2); }
+    /* HISTORICO */
+    .h-card { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f1f2f6; }
+    .h-date { display: block; font-weight: 700; font-size: 0.85rem; }
+    .h-ref { font-size: 0.7rem; color: #a4b0be; }
+    .h-status { text-align: right; }
+    .h-amt { display: block; font-weight: 800; font-size: 0.95rem; }
+    .h-state { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
+    .green { color: #2ed573; }
+    .orange { color: #ffa502; }
+    .red { color: #ff4757; }
 
-    .empty-state { text-align: center; padding: 50px 0; opacity: 0.3; }
-    .empty-state i { font-size: 3rem; margin-bottom: 10px; }
+    .alert { background: #ffeaa7; padding: 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin-bottom: 15px; color: #d35400; text-align: center; }
 </style>
 
 <script>
-    const amountInput = document.getElementById('id_amount');
-    const taxVal = document.getElementById('tax-val');
-    const netVal = document.getElementById('net-val');
+    function toggleExtrato() {
+        const modal = document.getElementById('modal-extrato');
+        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+    }
 
+    const amountInput = document.getElementById('id_amount');
     amountInput.addEventListener('input', function() {
-        let val = parseFloat(this.value);
-        if (val > 0) {
-            let tax = val * 0.10;
-            let net = val - tax;
-            taxVal.innerText = tax.toFixed(2) + " KZ";
-            netVal.innerText = net.toFixed(2) + " KZ";
-        } else {
-            taxVal.innerText = "0.00 KZ";
-            netVal.innerText = "0.00 KZ";
-        }
+        let val = parseFloat(this.value) || 0;
+        let tax = val * 0.10;
+        let net = val - tax;
+        document.getElementById('tax-val').innerText = tax.toFixed(2) + " KZ";
+        document.getElementById('net-val').innerText = net.toFixed(2) + " KZ";
     });
 </script>
 {% endblock %}

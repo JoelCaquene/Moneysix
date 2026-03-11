@@ -1,387 +1,238 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}BBDO - Home{% endblock %}
+{% block title %}MONEYSIX - Home{% endblock %}
 
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
 <div class="app-container">
     
-    <header class="main-header">
-        <div class="header-top-row">
-            <h1 class="hero-title">Un buon lavoro<br>Vieni a BBDO</h1>
-            <div class="logo-container">
-                <img src="{% static 'images/bbdo_logo_red.png' %}" alt="BBDO" class="bbdo-logo-top">
-            </div>
-        </div>
-        
-        <div class="banner-wrapper">
-            <img src="{% static 'images/banner_bbdo.png' %}" class="main-banner-img" alt="World Team">
-            <div class="carousel-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-            </div>
+    <header class="glass-header">
+        <div class="header-content">
+            <a href="{{ whatsapp_link }}" target="_blank" class="top-support">
+                <i class="fas fa-headset"></i>
+                <span>Suporte</span>
+            </a>
+            <h1 class="platform-logo">MONEYSIX</h1>
         </div>
     </header>
 
-    <div class="news-ticker">
-        <i class="fas fa-volume-up speaker-icon"></i>
-        <div class="ticker-content">
-            <marquee scrollamount="3">Bem-vindo à BBDO, é uma das redes de agências de publicidade mais prestigiadas do mundo. Com Sede em Nova York</marquee>
+    <div class="carousel-wrapper">
+        <div class="carousel-track">
+            <img src="{% static 'images/banner1.png' %}" class="slide" alt="Promo 1">
+            <img src="{% static 'images/banner2.png' %}" class="slide" alt="Promo 2">
+            <img src="{% static 'images/banner3.png' %}" class="slide" alt="Promo 3">
         </div>
     </div>
 
-    <section class="mission-section">
-        <h2 class="section-label">Mission Hall</h2>
-        <div class="bbdo-card-gold">
-            <div class="card-left">
-                <span class="card-brand">BBDO</span>
+    <div class="news-bar">
+        <i class="fas fa-volume-up"></i>
+        <marquee scrollamount="4">Bem-vindo à MONEYSIX! Ganhe recompensas diárias cumprindo missões publicitárias.</marquee>
+    </div>
+
+    <div class="main-grid">
+        <a href="{% url 'deposito' %}" class="glass-action-btn">
+            <div class="btn-icon circle-1"><i class="fas fa-wallet"></i></div>
+            <span class="btn-label">Depósito</span>
+        </a>
+
+        <a href="{% url 'saque' %}" class="glass-action-btn">
+            <div class="btn-icon circle-2"><i class="fas fa-hand-holding-usd"></i></div>
+            <span class="btn-label">Retirada</span>
+        </a>
+
+        <a href="{% url 'renda' %}" class="glass-action-btn">
+            <div class="btn-icon circle-3"><i class="fas fa-chart-line"></i></div>
+            <span class="btn-label">Renda</span>
+        </a>
+
+        <a href="{% url 'tarefa' %}" class="glass-action-btn">
+            <div class="btn-icon circle-4"><i class="fas fa-tasks"></i></div>
+            <span class="btn-label">Tarefa</span>
+        </a>
+    </div>
+
+    <div class="info-section">
+        
+        <div class="info-card card-history">
+            <div class="card-image">
+                <img src="https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=500" alt="Origens e História">
             </div>
-            <div class="card-right">
-                <div class="golden-letter">B</div>
+            <div class="card-body">
+                <h3><i class="fas fa-history"></i> Histórico da MONEYSIX</h3>
+                <p>A <strong>MONEYSIX</strong> é uma plataforma de investimento online de origem portuguesa, pertencente à prestigiada empresa <strong>TAYLOR Fladgate</strong>. Nossa central está localizada no Porto, com escritório de relações em Lisboa, na Rua do Comércio, 23.</p>
+                <p>Idealizada pelo <strong>Engenheiro Monteiro de Sousa Campo</strong>, nacionalista e professor da Universidade de Coimbra, o projeto nasceu em 15 de Janeiro de 2020 como solução de empregabilidade durante a COVID-19.</p>
+                <p>Após um período de maturação, foi lançada oficialmente em 20 de Dezembro de 2025. Em 2026, expandimos para Angola e Brasil, com previsão de chegada a Moçambique e Cabo Verde em 15 de Abril.</p>
             </div>
         </div>
-    </section>
 
-    <div class="actions-grid">
-        <a href="{% url 'saque' %}" class="action-item">
-            <div class="icon-box border-red">
-                <img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" class="icon-img-red">
+        <div class="info-card card-objectives">
+            <div class="card-image">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=500" alt="Objectivos">
             </div>
-            <span class="btn-text">Retiradas</span>
-        </a>
+            <div class="card-body">
+                <h3><i class="fas fa-bullseye"></i> Objectivos</h3>
+                <p>Nosso foco principal é servir como um meio auxiliar de rendimento sustentável, oferecendo oportunidades tanto para membros desempregados quanto para trabalhadores que buscam uma renda extra de forma tecnológica e segura.</p>
+            </div>
+        </div>
 
-        <a href="{% url 'deposito' %}" class="action-item">
-            <div class="icon-box bg-red">
-                <img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" class="icon-img-white">
+        <div class="info-card card-credit">
+            <div class="card-image">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=500" alt="Crédito">
             </div>
-            <span class="btn-text">Depósito</span>
-        </a>
+            <div class="card-body">
+                <h3><i class="fas fa-hand-holding-heart"></i> Políticas de Crédito</h3>
+                <p>Disponível para <strong>VIPS 3 ou superior</strong> após 15 dias de atividade. O crédito solicitado não pode triplicar o valor do seu VIP (Ex: VIP de 1 EUR permite crédito máximo de 2 EUR).</p>
+                <p><strong>Pagamento:</strong> Desconto automático de 70% em cada saque até a liquidação total. É necessário documento válido, cartão de residência e declaração de objetivo. A avaliação ocorre em até 5 dias.</p>
+            </div>
+        </div>
 
-        <a href="{% url 'equipa' %}" class="action-item">
-            <div class="icon-box">
-                <img src="https://cdn-icons-png.flaticon.com/512/1159/1159642.png" class="icon-img-red">
+        <div class="info-card card-platform">
+            <div class="card-image">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=500" alt="Plataforma">
             </div>
-            <span class="btn-text">Compartilhe<br>convite</span>
-        </a>
-
-        <a href="{% url 'nivel' %}" class="action-item">
-            <div class="icon-box">
-                <img src="https://cdn-icons-png.flaticon.com/512/1534/1534039.png" class="icon-img-red">
+            <div class="card-body">
+                <h3><i class="fas fa-shield-alt"></i> Políticas da Plataforma</h3>
+                <ul class="policy-list">
+                    <li><span>Investimento Mínimo:</span> 9600 KZ</li>
+                    <li><span>Saque Mínimo:</span> 2000 KZ</li>
+                    <li><span>Taxa de Saque:</span> 10%</li>
+                    <li><span>Processamento:</span> 5 min a 24 horas</li>
+                    <li><span>Contrato:</span> 1 Ano (Renovável)</li>
+                    <li><span>Efetividade:</span> Após 6 meses (50% de reembolso)</li>
+                    <li><span>Horário:</span> Seg. a Sáb. (09h às 17h)</li>
+                    <li><span>Saque:</span> Diário</li>
+                </ul>
             </div>
-            <span class="btn-text">Junte-se a nós</span>
-        </a>
-
-        <a href="{% url 'perfil' %}" class="action-item full-width-item">
-            <div class="icon-box">
-                <img src="https://cdn-icons-png.flaticon.com/512/2800/2800168.png" class="icon-img-red">
-            </div>
-            <span class="btn-text">Perfil de companhia</span>
-        </a>
+        </div>
     </div>
 
-    <a href="{{ whatsapp_link }}" target="_blank" class="floating-support">
-    <div class="support-circle">
-        <img src="https://cdn-icons-png.flaticon.com/512/1250/1250689.png" class="icon-support">
-    </div>
-    <span class="support-label">APOIO AO<br>CLIENTE</span>
-</a>
-
-<style>
-    .floating-support {
-        position: fixed;
-        bottom: 85px; 
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-decoration: none;
-        z-index: 1000;
-    }
-
-    .support-circle {
-        width: 60px;
-        height: 60px;
-        background-color: #ff0000; /* Cor vermelha para combinar com o seu ícone da imagem */
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        border: 2px solid #ffffff;
-    }
-
-    .icon-support {
-        width: 35px;
-        height: 35px;
-        filter: brightness(0) invert(1); /* Ícone branco */
-    }
-
-    .support-label {
-        /* Fundo removido para não escurecer */
-        color: #333333; /* Cinza escuro legível */
-        font-size: 11px;
-        margin-top: 5px;
-        text-align: center;
-        font-weight: bold;
-        line-height: 1.2;
-        text-shadow: 1px 1px 0px #fff; /* Sombra branca para destacar no fundo claro */
-    }
-</style>
-
-    <nav class="bottom-nav">
-        <a href="{% url 'home' %}" class="nav-tab active">
-            <i class="fas fa-home nav-icon-font"></i>
-            <span>Página inicial</span>
+    <nav class="bottom-nav-glass">
+        <a href="{% url 'nivel' %}" class="nav-item">
+            <i class="fas fa-crown"></i>
+            <span>SER VIP</span>
         </a>
-        <a href="{% url 'tarefa' %}" class="nav-tab">
-            <i class="fas fa-tasks nav-icon-font"></i>
-            <span>Registro de tarefas</span>
+        <a href="{% url 'equipa' %}" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Equipa</span>
         </a>
-        <a href="{% url 'nivel' %}" class="nav-tab">
-            <i class="fas fa-users nav-icon-font"></i>
-            <span>Junte-se a nós</span>
+        
+        <div class="nav-item special-spin" onclick="lancarFogos(this)">
+    <a href="{% url 'roleta' %}" id="btn-sorteio-destaque">
+        <div class="icon-wrapper">
+            <i class="fas fa-dharmachakra"></i> 
+        </div>
+        <span class="txt-sorteio">Sorteio</span>
+    </a>
+</div>
+        <a href="{% url 'sobre' %}" class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <span>POUPANÇA</span>
         </a>
-        <a href="{% url 'renda' %}" class="nav-tab">
-            <i class="fas fa-chart-line nav-icon-font"></i>
-            <span>renda</span>
-        </a>
-        <a href="{% url 'perfil' %}" class="nav-tab">
-            <i class="fas fa-user nav-icon-font"></i>
+        <a href="{% url 'perfil' %}" class="nav-item">
+            <i class="fas fa-user-circle"></i>
             <span>Meu</span>
         </a>
     </nav>
 </div>
 
-<style>
-    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-
-    html, body { 
-        overflow-x: hidden; 
-        width: 100%; 
-        margin: 0; padding: 0; 
-        background-color: #f2f2f2;
-        -webkit-text-size-adjust: 100%;
-    }
-
-    * { box-sizing: border-box; font-family: 'Arial', sans-serif; }
-
-    .app-container {
-        width: 100%;
-        max-width: 500px;
-        margin: 0 auto;
-        background: #fff;
-        min-height: 100vh;
-        position: relative;
-        padding-bottom: 90px;
-    }
-
-    .main-header { padding: 10px 15px 0 15px; }
-    .header-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .hero-title { font-size: 20px; font-weight: 900; color: #000; line-height: 1.1; margin: 0; }
-    .bbdo-logo-top { width: 70px; height: auto; }
-
-    .banner-wrapper { position: relative; width: 100%; border-radius: 12px; overflow: hidden; }
-    .main-banner-img { width: 100%; display: block; height: auto; }
-    
-    .carousel-dots {
-        position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
-        display: flex; gap: 5px;
-    }
-    .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.5); border-radius: 50%; }
-    .dot.active { background: #fff; width: 12px; border-radius: 4px; }
-
-    .news-ticker { display: flex; align-items: center; padding: 8px 15px; background: #fff; }
-    .speaker-icon { color: #00A3E0; font-size: 14px; margin-right: 8px; }
-    .ticker-content { flex: 1; font-size: 12px; color: #00A3E0; font-weight: 700; }
-
-    /* MISSION HALL DESIGN */
-    .mission-section { padding: 5px 15px; }
-    .section-label { font-size: 18px; font-weight: 800; margin-bottom: 10px; color: #333; }
-    .bbdo-card-gold {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 15px 25px; border-radius: 12px; background: #fff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
-    }
-    .card-brand { font-size: 16px; font-weight: 700; color: #333; }
-    .golden-letter { font-size: 48px; font-family: 'Times New Roman', serif; color: #D4AF37; font-weight: bold; line-height: 1; }
-
-    /* GRID SEM QUEBRA E COM ESPAÇO OTIMIZADO */
-    .actions-grid { 
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        padding: 10px 15px;
-    }
-    .action-item {
-        display: flex; align-items: center; padding: 12px 10px;
-        background: #fff; border-radius: 10px; border: 1px solid #eee;
-        text-decoration: none; color: #333;
-    }
-    .full-width-item { grid-column: span 2; }
-
-    .btn-text { 
-        font-size: clamp(10px, 3.2vw, 13px); 
-        font-weight: 700; 
-        margin-left: 8px; 
-        line-height: 1.2;
-    }
-
-    .icon-box { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .icon-img-red { width: 24px; filter: invert(16%) sepia(89%) saturate(6054%) hue-rotate(354deg) brightness(94%) contrast(106%); }
-    .icon-img-white { width: 22px; filter: brightness(0) invert(1); }
-    
-    .bg-red { background: #E31A1A; border-radius: 8px; }
-    .border-red { border: 2px solid #E31A1A; border-radius: 8px; }
-
-    /* SUPORTE FLUTUANTE */
-    .floating-support {
-        position: fixed; right: 15px; bottom: 80px; 
-        display: flex; flex-direction: column; align-items: center; z-index: 2000;
-        text-decoration: none;
-    }
-    .support-circle {
-        background: #E31A1A; width: 55px; height: 55px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        border: 3px solid #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .icon-support { width: 30px; filter: brightness(0) invert(1); }
-    .support-label { font-size: 9px; font-weight: 900; color: #333; text-align: center; margin-top: 4px; line-height: 1; }
-
-    /* NAV INFERIOR */
-    .bottom-nav {
-        position: fixed; bottom: 0; width: 100%; max-width: 500px;
-        background: #fff; display: flex; justify-content: space-around;
-        padding: 12px 0; border-top: 1px solid #eee; z-index: 1000;
-    }
-    .nav-tab { text-decoration: none; color: #aaa; display: flex; flex-direction: column; align-items: center; width: 20%; }
-    .nav-icon-font { font-size: 20px; margin-bottom: 4px; }
-    .nav-tab span { font-size: 9px; font-weight: 700; text-align: center; }
-    .nav-tab.active { color: #E31A1A; }
-</style>
-
 <div id="welcomePopup" class="popup-overlay">
-    <div class="popup-content">
-        <div class="popup-header-img">
-            <img src="{% static 'images/welcome_banner.png' %}" alt="Bem-vindo" id="mainPopupImg">
-        </div>
-        
+    <div class="popup-content compact-popup">
         <div class="popup-body">
-            <h3>Bem-vindo à BBDO</h3>
-            <p>Junte-se às nossas comunidades oficiais para suporte e novidades.</p>
-            
+            <h3>MONEYSIX</h3>
+            <p>Entre nos canais oficiais:</p>
             <div class="popup-links">
-                <a href="https://chat.whatsapp.com/L9nts7KgjtnHvvQJcIaHBp?mode=gi_t" target="_blank" class="social-btn whatsapp">
-                    <i class="fab fa-whatsapp"></i> WhatsApp Grupo
-                </a>
-                <a href="https://t.me/+JaeN8OduUnQ1OWQ8" target="_blank" class="social-btn telegram">
-                    <i class="fab fa-telegram-plane"></i> Telegram Canal
-                </a>
+                <a href="https://chat.whatsapp.com/L9nts7KgjtnHvvQJcIaHBp" class="social-btn whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                <a href="https://t.me/+JaeN8OduUnQ1OWQ8" class="social-btn telegram"><i class="fab fa-telegram-plane"></i> Telegram</a>
             </div>
-            
-            <button onclick="closePopup()" class="btn-close-popup">Fechar</button>
+            <button onclick="closePopup()" class="btn-close-popup">ENTRAR</button>
         </div>
     </div>
 </div>
 
 <style>
-    /* Fundo escurecido */
-    .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.4s ease;
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+    html, body {
+        margin: 0; padding: 0; width: 100%; overflow-x: hidden;
+        background: linear-gradient(135deg, #075985 0%, #0ea5e9 100%);
+        background-attachment: fixed; font-family: sans-serif;
     }
 
-    /* Efeito Vidro (Glassmorphism) */
-    .popup-content {
-        width: 85%;
-        max-width: 320px;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        transform: scale(0.8);
-        transition: all 0.4s ease;
-        text-align: center;
-    }
+    .app-container { width: 100%; max-width: 500px; margin: 0 auto; min-height: 100vh; padding-bottom: 110px; }
 
-    /* Quando o pop-up abre */
-    .popup-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
-    .popup-overlay.active .popup-content {
-        transform: scale(1);
-    }
+    /* HEADER & NEWS */
+    .glass-header { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+    .header-content { display: flex; justify-content: space-between; align-items: center; }
+    .platform-logo { color: #fff; font-weight: 900; margin: 0; font-size: 1.3rem; }
+    .top-support { text-decoration: none; color: #fff; text-align: center; font-size: 10px; }
+    .top-support i { font-size: 20px; display: block; }
 
-    /* Imagem do Topo */
-    .popup-header-img img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
+    .carousel-wrapper { width: 94%; margin: 15px auto; height: 160px; border-radius: 15px; overflow: hidden; position: relative; }
+    .carousel-track { display: flex; width: 300%; height: 100%; animation: rotateCarousel 12s infinite ease-in-out; }
+    .slide { width: 33.33%; object-fit: cover; }
+    @keyframes rotateCarousel { 0%, 30% { transform: translateX(0); } 33%, 63% { transform: translateX(-33.33%); } 66%, 96% { transform: translateX(-66.66%); } 100% { transform: translateX(0); } }
 
-    .popup-body { padding: 20px; color: #fff; }
+    .news-bar { background: rgba(0,0,0,0.2); padding: 8px; color: #e0f2fe; font-size: 12px; display: flex; gap: 10px; }
 
-    .popup-body h3 { margin: 0 0 10px; font-size: 18px; font-weight: 800; }
-    .popup-body p { font-size: 13px; margin-bottom: 20px; opacity: 0.9; }
+    /* GRID DE BOTÕES */
+    .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+    .glass-action-btn { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 12px 8px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .btn-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; flex-shrink: 0; }
+    .btn-label { color: #fff; font-weight: bold; font-size: 13px; white-space: nowrap; }
+    .circle-1 { background: #f59e0b; } .circle-2 { background: #ef4444; } .circle-3 { background: #22c55e; } .circle-4 { background: #3b82f6; }
 
-    /* Botões Sociais */
-    .popup-links { display: flex; flex-direction: column; gap: 10px; }
+    /* ESTILO DOS CARDS DE INFORMAÇÃO */
+    .info-section { padding: 0 15px; display: flex; flex-direction: column; gap: 20px; margin-top: 10px; }
+    .info-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: transform 0.3s; }
+    
+    .card-image img { width: 100%; height: 140px; object-fit: cover; display: block; border-bottom: 2px solid rgba(255,255,255,0.1); }
+    .card-body { padding: 20px; color: #fff; }
+    .card-body h3 { margin-top: 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .card-body p { font-size: 14px; line-height: 1.6; margin-bottom: 10px; opacity: 0.95; text-align: justify; }
 
-    .social-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 12px;
-        border-radius: 12px;
-        text-decoration: none;
-        color: #fff;
-        font-weight: bold;
-        font-size: 14px;
-        transition: 0.3s;
-    }
+    /* Cores Diferentes em Bordas e Ícones para cada Card */
+    .card-history h3 { color: #fbbf24; }
+    .card-objectives h3 { color: #60a5fa; }
+    .card-credit h3 { color: #f87171; }
+    .card-platform h3 { color: #4ade80; }
 
-    .whatsapp { background: #25D366; }
-    .telegram { background: #0088cc; }
+    .policy-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .policy-list li { font-size: 13px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+    .policy-list li span { font-weight: bold; color: rgba(255,255,255,0.7); }
 
-    /* Botão Fechar */
-    .btn-close-popup {
-        margin-top: 15px;
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.5);
-        color: #fff;
-        padding: 8px 20px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 12px;
-    }
+    /* NAVBAR */
+    .bottom-nav-glass { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000; }
+    .nav-item { text-decoration: none; color: rgba(255,255,255,0.7); display: flex; flex-direction: column; align-items: center; width: 20%; }
+    .nav-item i { font-size: 18px; margin-bottom: 2px; }
+    .nav-item span { font-size: 9px; font-weight: bold; }
+    .special-spin i { animation: spinWheel 3s linear infinite; color: #fbbf24; }
+    @keyframes spinWheel { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* POP-UP */
+    .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 9999; opacity: 0; visibility: hidden; transition: 0.3s; }
+    .popup-overlay.active { opacity: 1; visibility: visible; }
+    .compact-popup { width: 75%; max-width: 280px; background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 10px; }
+    .popup-body h3 { margin: 5px 0; color: #fff; font-size: 1.1rem; text-align: center; }
+    .popup-body p { color: #cbd5e1; font-size: 13px; margin-bottom: 15px; text-align: center; }
+    .popup-links { display: flex; flex-direction: column; gap: 8px; }
+    .social-btn { padding: 10px; border-radius: 10px; text-decoration: none; color: #fff; font-weight: bold; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+    .whatsapp { background: #128c7e; } .telegram { background: #0088cc; }
+    .btn-close-popup { background: #fff; color: #000; border: none; padding: 8px 20px; border-radius: 15px; font-weight: 800; margin-top: 15px; cursor: pointer; width: 100%; }
 </style>
 
 <script>
-    // Função para mostrar o pop-up ao carregar
+    function lancarFogos(element) {
+        confetti({ particleCount: 120, spread: 60, origin: { y: 0.8 } });
+    }
     window.onload = function() {
         setTimeout(function() {
             document.getElementById('welcomePopup').classList.add('active');
-        }, 500); // Meio segundo de atraso para suavizar
+        }, 600);
     };
-
     function closePopup() {
         document.getElementById('welcomePopup').classList.remove('active');
     }
 </script>
-
 {% endblock %}

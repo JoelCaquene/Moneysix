@@ -1,1 +1,1 @@
-web: gunicorn bbdo.wsgi
+web: gunicorn moneysix.wsgi

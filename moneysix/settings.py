@@ -1,6 +1,6 @@
 """
-Django settings for bbdo project.
-Configurado para Produção no Heroku com Domínio Personalizado: bbdov2.pro
+Django settings for moneysix project.
+Configurado para Produção no Heroku com Domínio Personalizado: moneysixv2.pro
 """
 
 from pathlib import Path
@@ -23,9 +23,6 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-produca
 
 # Aceita o novo domínio, o link do Heroku e localhost
 ALLOWED_HOSTS = [
-    'bbdov2.pro',
-    'www.bbdov2.pro',
-    'bbdo-v2-5934649d5ee7.herokuapp.com',
     'localhost',
     '127.0.0.1'
 ]
@@ -36,9 +33,9 @@ if not DEBUG:
 
 # Configuração de origens confiáveis para CSRF (Importante para o Admin funcionar)
 CSRF_TRUSTED_ORIGINS = [
-    'https://bbdov2.pro',
-    'https://www.bbdov2.pro',
-    'https://bbdo-v2-5934649d5ee7.herokuapp.com'
+    'https://moneysixv2.pro',
+    'https://www.moneysixv2.pro',
+    'https://moneysix-v2-5934649d5ee7.herokuapp.com'
 ]
 
 # ======================================================================
@@ -68,7 +65,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'bbdo.urls'
+ROOT_URLCONF = 'moneysix.urls'
 
 TEMPLATES = [
     {
@@ -87,7 +84,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'bbdo.wsgi.application'
+WSGI_APPLICATION = 'moneysix.wsgi.application'
 
 # ======================================================================
 # DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO)

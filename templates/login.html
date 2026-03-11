@@ -5,235 +5,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BBDO - {% trans "Login" %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Serif:wght@700&display=swap" rel="stylesheet">
+    <title>Moneysix - {% trans "Login" %}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --bg-purple: #4a00ac; 
-            --btn-gold-start: #ccab66; 
-            --btn-gold-end: #937438;
-            --btn-black: #000000;
-            --input-bg: #f3f7ff; 
-            --logo-red: #ff0000; 
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f9e29c 50%, #b8860b 100%);
+            --text-white: #ffffff;
+            --input-focus-border: #00d4ff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-purple);
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(180deg, #1a73e8 0%, #0d47a1 50%, #000000 100%);
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            color: var(--text-white);
         }
 
         .main-wrapper {
             width: 100%;
             max-width: 450px;
-            height: 100vh;
-            background-color: var(--bg-purple);
-            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden;
+            padding: 60px 20px;
+            position: relative;
         }
 
-        /* AJUSTE DO TOPO BRANCO */
-        .top-wave-container {
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 58px;
+            font-style: italic;
+            color: #ffffff;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            letter-spacing: -2px;
+        }
+
+        /* CARD DE VIDRO REFEITO */
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
             width: 100%;
-            background-color: #ffffff;
-            height: 32vh; /* Ajustado para dar espaço à curva */
+            border-radius: 35px;
+            padding: 40px 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+
+        .form-group { margin-bottom: 25px; position: relative; }
+
+        .input-wrapper {
             position: relative;
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 1;
         }
 
-        /* SVG REFEITO PARA IMITAR A CURVA DA IMAGEM E A LINHA VERMELHA */
-        .wave-svg {
+        .input-wrapper i.input-icon {
             position: absolute;
-            bottom: -58px; /* Encaixe preciso */
-            left: 0;
-            width: 100%;
-            height: 80px;
-        }
-
-        .header-section .logo-text {
-            font-family: 'Noto Serif', serif; 
-            font-size: 80px; 
-            color: var(--logo-red);
-            font-weight: 700;
-            text-transform: uppercase;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* CARD DE LOGIN */
-        .login-card {
-            background: #ffffff;
-            width: 90%; 
-            border-radius: 35px; 
-            padding: 40px 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 10;
-            margin-top: 50px; /* Deslocado para baixo da curva */
-        }
-
-        .form-group { position: relative; margin-bottom: 20px; }
-
-        .form-group i.input-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8e8e8e;
+            left: 18px;
+            color: #ffffff;
             font-size: 1.2rem;
+            z-index: 10;
         }
 
+        /* INPUTS COM ALTA VISIBILIDADE E FOCO */
         .auth-form input {
             width: 100%;
-            padding: 18px 20px 18px 60px; 
-            border: none;
-            background-color: var(--input-bg);
-            border-radius: 12px;
-            font-size: 1.1rem; 
+            padding: 18px 15px 18px 55px;
+            border: 2px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            font-size: 1.05rem;
             outline: none;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .auth-form input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .auth-form input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: var(--input-focus-border);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
         }
 
         .options-row {
             display: flex;
             align-items: center;
-            margin: 20px 0 30px 5px;
-            color: #9ea4b0;
-            font-size: 0.9rem;
+            margin: -10px 0 25px 5px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .options-row input[type="checkbox"] {
             margin-right: 10px;
-            accent-color: var(--bg-purple); 
             width: 18px;
             height: 18px;
+            accent-color: #00d4ff;
         }
 
+        /* BOTÕES ESTILIZADOS */
         .btn-entrar {
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             border: none;
-            border-radius: 40px; 
-            background: linear-gradient(to bottom, var(--btn-gold-start), var(--btn-gold-end));
-            color: white;
-            font-size: 1.2rem;
-            font-weight: 600;
+            border-radius: 20px;
+            background: #ffffff;
+            color: #000000;
+            font-size: 1.1rem;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
+
+        .btn-entrar:active { transform: scale(0.98); }
 
         .btn-registrar {
             width: 100%;
-            padding: 18px;
-            margin-top: 15px;
-            border-radius: 40px; 
-            background-color: var(--btn-black);
-            color: white;
-            font-size: 1.2rem;
+            padding: 20px;
+            border-radius: 20px;
+            background: var(--gold-gradient);
+            color: #4a3300;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-align: center;
             text-decoration: none;
+            text-transform: uppercase;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .btn-registrar i { margin-left: 12px; }
+
+        .or-divider {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin: 15px 0;
             font-weight: 600;
+            text-transform: uppercase;
         }
 
-        /* ÍCONE DO CAMINHÃO IGUAL À FOTO */
-        .btn-registrar img {
-            width: 40px;
-            margin-left: 10px;
-        }
-
-        .or-divider { text-align: center; color: #d1d1d1; margin: 15px 0; }
-
+        /* SUPORTE */
         .support-container {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
+            margin-top: 30px;
             text-align: center;
             text-decoration: none;
-            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
-        .support-container img { width: 50px; display: block; margin: 0 auto; }
-        .support-container span { color: white; font-size: 0.8rem; }
+        .support-container img { width: 45px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        .support-container span { color: white; font-size: 0.85rem; font-weight: 600; }
 
         .toggle-password {
             position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 18px;
             cursor: pointer;
-            color: #8e8e8e;
+            color: #ffffff;
+            font-size: 1.1rem;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
     <div class="main-wrapper">
-        <div class="top-wave-container">
-            <div class="header-section">
-                <div class="logo-text">BBDO</div>
-            </div>
-            <svg class="wave-svg" viewBox="0 0 500 150" preserveAspectRatio="none">
-                <path d="M0,45 C150,140 350,-40 500,45 L500,0 L0,0 Z" fill="none" stroke="#ff0000" stroke-width="3"></path>
-                <path d="M0,50 C150,150 350,-50 500,50 L500,0 L0,0 Z" fill="#ffffff"></path>
-            </svg>
+        <div class="header-section">
+            <div class="logo-text">Moneysix</div>
         </div>
 
         <div class="login-card">
             <form method="post" class="auth-form">
                 {% csrf_token %}
+                
                 <div class="form-group">
-                    <i class="fa-solid fa-user input-icon"></i>
-                    {{ form.username }}
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user input-icon"></i>
+                        {{ form.username }}
+                    </div>
                 </div>
+
                 <div class="form-group">
-                    <i class="fa-solid fa-lock input-icon"></i>
-                    {{ form.password }}
-                    <i class="fa-solid fa-eye-slash toggle-password" id="togglePass"></i>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        {{ form.password }}
+                        <i class="fa-solid fa-eye-slash toggle-password" id="togglePass"></i>
+                    </div>
                 </div>
+
                 <div class="options-row">
                     <input type="checkbox" id="remember" checked>
-                    <label for="remember">{% trans "Lembrar ID de Usuário/Senha" %}</label>
+                    <label for="remember">{% trans "Lembrar a senha" %}</label>
                 </div>
+
                 <button type="submit" class="btn-entrar">
-                    {% trans "Entrando..." %}
+                    {% trans "Entrar" %}
                 </button>
-                <div class="or-divider">or</div>
+
+                <div class="or-divider">{% trans "ou" %}</div>
+
                 <a href="{% url 'cadastro' %}" class="btn-registrar">
-                    {% trans "Registar-se" %}
-                    <img src="https://cdn-icons-png.flaticon.com/512/2554/2554978.png" alt="truck">
+                    {% trans "Criar Conta" %}
+                    <i class="fa-solid fa-arrow-right-long"></i>
                 </a>
             </form>
         </div>
 
-        <a href="#" class="support-container">
-            <img src="https://cdn-icons-png.flaticon.com/512/6009/6009132.png" alt="Suporte">
-            <span>{% trans "Suporte Online" %}</span>
-        </a>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Aplica classes e placeholders nos campos do Django Form
             const userInp = document.querySelector('input[name="username"]');
             const passInp = document.querySelector('input[name="password"]');
-            if(userInp) userInp.placeholder = '940000000';
-            if(passInp) passInp.placeholder = '..........';
+            
+            if(userInp) {
+                userInp.placeholder = '{% trans "Telefone ou Usuário" %}';
+            }
+            if(passInp) {
+                passInp.placeholder = '..........';
+                passInp.id = 'id_password';
+            }
 
-            const togglePass = document.getElementById('togglePass');
-            if(togglePass && passInp) {
-                togglePass.addEventListener('click', function() {
+            // Lógica do olho da senha
+            const togglePassBtn = document.getElementById('togglePass');
+            if(togglePassBtn && passInp) {
+                togglePassBtn.addEventListener('click', function() {
                     const type = passInp.getAttribute('type') === 'password' ? 'text' : 'password';
                     passInp.setAttribute('type', type);
                     this.classList.toggle('fa-eye');
