@@ -1,6 +1,6 @@
 """
 Django settings for moneysix project.
-Configurado para Produção no Heroku com Domínio Personalizado: moneysixv2.pro
+Configurado para Produção no RENDER.COM
 """
 
 from pathlib import Path
@@ -12,7 +12,7 @@ from django.utils.translation import gettext_lazy as _
 # Caminho base do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SEGURANÇA: DEBUG controlado via variável de ambiente no Heroku
+# SEGURANÇA: DEBUG falso em produção
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-producao')
@@ -21,22 +21,26 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-produca
 # CONFIGURAÇÃO DOS HOSTS PERMITIDOS E CSRF
 # ======================================================================
 
-# Aceita o novo domínio, o link do Heroku e localhost
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    'moneysixv2.pro',
+    'www.moneysixv2.pro',
 ]
 
-# FORÇAR REDIRECIONAMENTO PARA WWW (Se não estiver em DEBUG)
-if not DEBUG:
-    PREPEND_WWW = True
+# Adiciona o domínio automático do Render aos hosts permitidos
+RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default=None)
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-# Configuração de origens confiáveis para CSRF (Importante para o Admin funcionar)
+# Configuração de origens confiáveis para CSRF
 CSRF_TRUSTED_ORIGINS = [
     'https://moneysixv2.pro',
     'https://www.moneysixv2.pro',
-    'https://moneysix-v2-5934649d5ee7.herokuapp.com'
 ]
+
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
 
 # ======================================================================
 # APPS E MIDDLEWARE
@@ -87,7 +91,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'moneysix.wsgi.application'
 
 # ======================================================================
-# DATABASE (SQLITE LOCAL / POSTGRES EM PRODUÇÃO)
+# DATABASE (SQLITE LOCAL / POSTGRES NO RENDER)
 # ======================================================================
 DATABASES = {
     'default': dj_database_url.config(
@@ -129,7 +133,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # ======================================================================
-# SEGURANÇA EXTRA (ESTÁVEL PARA HEROKU)
+# SEGURANÇA EXTRA PARA PRODUÇÃO
 # ======================================================================
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
