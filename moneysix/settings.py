@@ -24,8 +24,8 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-produca
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'moneysixv2.pro',
-    'www.moneysixv2.pro',
+    'moneysix.it.com',
+    'www.moneysix.it.com',
 ]
 
 # Adiciona o domínio automático do Render aos hosts permitidos
@@ -35,8 +35,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 # Configuração de origens confiáveis para CSRF
 CSRF_TRUSTED_ORIGINS = [
-    'https://moneysixv2.pro',
-    'https://www.moneysixv2.pro',
+    'https://moneysix.it.com',
+    'https://www.moneysix.it.com',
 ]
 
 if RENDER_EXTERNAL_HOSTNAME:
@@ -133,9 +133,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # ======================================================================
-# SEGURANÇA EXTRA PARA PRODUÇÃO
+# SEGURANÇA EXTRA PARA PRODUÇÃO E FORÇAR WWW
 # ======================================================================
 if not DEBUG:
+    # Força o redirecionamento para HTTPS e para o subdomínio WWW
+    PREPEND_WWW = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
