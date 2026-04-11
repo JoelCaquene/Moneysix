@@ -1,6 +1,6 @@
 """
 Django settings for moneysix project.
-Configurado para Produção no RENDER.COM
+Configurado para Produção no RENDER.COM com novo domínio .ORG
 """
 
 from pathlib import Path
@@ -18,14 +18,14 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-mudar-isso-em-producao')
 
 # ======================================================================
-# CONFIGURAÇÃO DOS HOSTS PERMITIDOS E CSRF
+# CONFIGURAÇÃO DOS HOSTS PERMITIDOS E CSRF (ATUALIZADO PARA .ORG)
 # ======================================================================
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'moneysix.it.com',
-    'www.moneysix.it.com',
+    'moneysix.org',        # Novo domínio
+    'www.moneysix.org',    # Novo domínio com www
 ]
 
 # Adiciona o domínio automático do Render aos hosts permitidos
@@ -35,8 +35,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 # Configuração de origens confiáveis para CSRF
 CSRF_TRUSTED_ORIGINS = [
-    'https://moneysix.it.com',
-    'https://www.moneysix.it.com',
+    'https://moneysix.org',
+    'https://www.moneysix.org',
 ]
 
 if RENDER_EXTERNAL_HOSTNAME:
@@ -133,11 +133,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # ======================================================================
-# SEGURANÇA EXTRA PARA PRODUÇÃO E FORÇAR WWW
+# SEGURANÇA EXTRA PARA PRODUÇÃO
 # ======================================================================
 if not DEBUG:
-    # Força o redirecionamento para HTTPS e para o subdomínio WWW
-    PREPEND_WWW = True
+    # IMPORTANTE: Desativamos temporariamente o PREPEND_WWW para liberar o link do Render.
+    # O redirecionamento para o domínio principal agora é feito de forma inteligente.
+    PREPEND_WWW = False 
+    
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
